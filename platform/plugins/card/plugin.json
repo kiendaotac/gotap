@@ -1,0 +1,9 @@
+{
+    "name": "Card",
+    "namespace": "Botble\\Card\\",
+    "provider": "Botble\\Card\\Providers\\CardServiceProvider",
+    "author": "Kiên Đạo Tặc",
+    "url": "http://kiendaotac.com",
+    "version": "1.0",
+    "description": "A card of gotap.com.vn"
+}
