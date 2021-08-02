@@ -142,7 +142,7 @@ class PublicController extends Controller
         $item = new SocialItem($data);
         Auth::guard('member')->user()->load('account')->account->items()->save($item);
 
-        return redirect()->route('public.member.profile.index');
+        return redirect()->route('public.member.profile.social');
     }
 
     public function editProfileSocial($id)
