@@ -18,7 +18,7 @@ class RedirectIfMember
     public function handle($request, Closure $next, $guard = 'member')
     {
         if (Auth::guard($guard)->check()) {
-            return redirect(route('public.member.dashboard'));
+            return redirect(route('public.member.profile.index'));
         }
 
         return $next($request);

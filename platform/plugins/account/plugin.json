@@ -1,0 +1,9 @@
+{
+    "name": "Account",
+    "namespace": "Botble\\Account\\",
+    "provider": "Botble\\Account\\Providers\\AccountServiceProvider",
+    "author": "Kiên Đạo Tặc",
+    "url": "https://kiendaotac.com",
+    "version": "1.0",
+    "description": "Quản lý các thẻ và mạng xã hội trên hệ thống"
+}

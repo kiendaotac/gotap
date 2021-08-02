@@ -27,7 +27,7 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
             'as'         => 'public.member.',
         ], function () {
 
-            Route::group(['middleware' => ['member.guest']], function () {
+            /*Route::group(['middleware' => ['member.guest']], function () {
                 Route::get('login', 'LoginController@showLoginForm')->name('login');
                 Route::post('login', 'LoginController@login')->name('login.post');
 
@@ -41,18 +41,18 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                 Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
                 Route::post('password/reset', 'ResetPasswordController@reset')->name('password.update');
                 Route::get('password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
-            });
+            });*/
 
-            Route::group([
+            /*Route::group([
                 'middleware' => [setting('verify_account_email', config('plugins.member.general.verify_email')) ? 'member.guest' : 'member'],
             ], function () {
                 Route::get('register/confirm/resend',
                     'RegisterController@resendConfirmation')->name('resend_confirmation');
                 Route::get('register/confirm/{email}', 'RegisterController@confirm')->name('confirm');
-            });
+            });*/
         });
 
-        Route::group([
+        /*Route::group([
             'namespace'  => 'Botble\Member\Http\Controllers',
             'middleware' => ['web', 'core', 'member'],
             'as'         => 'public.member.',
@@ -150,7 +150,7 @@ if (defined('THEME_MODULE_SCREEN_NAME')) {
                     ]);
                 });
             }
-        });
+        });*/
 
     });
 }

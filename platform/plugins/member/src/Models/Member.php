@@ -2,6 +2,7 @@
 
 namespace Botble\Member\Models;
 
+use Botble\Account\Models\Account;
 use Botble\Base\Supports\Avatar;
 use Botble\Media\Models\MediaFile;
 use Botble\Member\Notifications\ResetPasswordNotification;
@@ -111,5 +112,10 @@ class Member extends Authenticatable
     public function posts()
     {
         return $this->morphMany('Botble\Blog\Models\Post', 'author');
+    }
+
+    public function account(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Account::class, 'member_id', 'id');
     }
 }

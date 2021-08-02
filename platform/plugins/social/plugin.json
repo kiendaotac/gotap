@@ -1,0 +1,9 @@
+{
+    "name": "Social",
+    "namespace": "Botble\\Social\\",
+    "provider": "Botble\\Social\\Providers\\SocialServiceProvider",
+    "author": "Kiên Đạo Tặc",
+    "url": "https://kiendaotac.com",
+    "version": "1.0",
+    "description": "Danh sách các mạng xã hội trên hệ thống"
+}
