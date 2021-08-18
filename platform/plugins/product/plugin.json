@@ -1,0 +1,9 @@
+{
+    "name": "Quản lý sản phẩm",
+    "namespace": "Botble\\Product\\",
+    "provider": "Botble\\Product\\Providers\\ProductServiceProvider",
+    "author": "Kiên Đạo Tặc",
+    "url": "https://kiendaotac.com",
+    "version": "1.0",
+    "description": "Quản lý danh sách sản phẩm trên hệ thống"
+}

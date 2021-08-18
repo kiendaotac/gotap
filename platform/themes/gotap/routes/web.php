@@ -72,6 +72,11 @@ Route::group(['namespace' => 'Theme\Gotap\Http\Controllers', 'middleware' => ['w
                     'uses' => 'PublicController@updateProfileSocial',
                 ]);
 
+                Route::post('profile/avatar', [
+                    'as'   => 'profile.avatar.store',
+                    'uses' => 'PublicController@storeAvatar',
+                ]);
+
                 /*Route::get('settings', [
                     'as'   => 'settings',
                     'uses' => 'PublicController@getSettings',

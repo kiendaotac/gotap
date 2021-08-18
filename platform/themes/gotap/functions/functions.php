@@ -3,6 +3,7 @@
 register_page_template([
     'default' => 'Default',
     'gotap' => 'Gotap',
+    'homepage' => 'Homepage'
 ]);
 
 register_sidebar([
@@ -148,7 +149,15 @@ theme_option()
                 'placeholder' => 'https://www.tiktok.com/@username',
             ],
         ],
-    ]);
+    ])
+    ->setSection([
+        'title'      => __('Site Information'),
+        'desc'       => __('Site Information'),
+        'id'         => 'opt-text-subsection-information',
+        'subsection' => true,
+        'icon'       => 'fa fa-share-alt',
+    ])
+;
 add_action('init', function () {
     config(['filesystems.disks.public.root' => public_path('storage')]);
 }, 124);
@@ -162,3 +171,5 @@ add_filter('language', function ($options) {
     return 1;
     return Theme::scope('card.switcher')->render();
 });
+
+Menu::addMenuLocation('main-menu-home-page', 'Main menu in home page');

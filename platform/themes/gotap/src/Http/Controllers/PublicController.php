@@ -86,7 +86,7 @@ class PublicController extends Controller
     {
         $user = Auth::guard('member')->user()->load('account');
 
-        $theme = Theme::uses()->layout('tappi-master');
+        $theme = Theme::uses()->layout('tappi-profile-edit');
 
         return $theme->scope('tappi.profile.edit', compact('user'))->render();
     }
@@ -187,6 +187,17 @@ class PublicController extends Controller
         }
 
         return redirect()->route('public.member.profile.index');
+    }
+
+    public function storeAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|file|image'
+        ]);
+
+        RvMedia::handleUpload($request->file('avatar'), 0, 'avatars');
+
+        return response()->json('done');
     }
 
     /**

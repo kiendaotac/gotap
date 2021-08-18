@@ -1,0 +1,9 @@
+{
+    "name": "Portfolio",
+    "namespace": "Botble\\Portfolio\\",
+    "provider": "Botble\\Portfolio\\Providers\\PortfolioServiceProvider",
+    "author": "Kiên Đạo Tặc",
+    "url": "https://kiendaotac.com",
+    "version": "1.0",
+    "description": "Quản lý portfolio trên hệ thống"
+}
