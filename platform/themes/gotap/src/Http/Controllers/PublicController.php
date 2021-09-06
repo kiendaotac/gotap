@@ -27,6 +27,24 @@ use SeoHelper;
 use Theme;
 use Illuminate\Support\Facades\Validator;
 
+const FACEBOOK    = 'facebook';
+const INSTAGRAM   = 'instagram';
+const GITHUB      = 'github';
+const YOUTUBE     = 'youtube';
+const TIKTOK      = 'tiktok';
+const PINTEREST   = 'pinterest';
+const LINKEDIN      = 'linkedin';
+const TWITTER     = 'twitter';
+const SNAPCHAT    = 'snapchat';
+const ZALO        = 'zalo';
+const PHONE       = 'phone';
+const SMS         = 'sms';
+const EMAIL       = 'email';
+const SOUNDCLOUD  = 'soundcloud';
+const TELEGRAM    = 'telegram';
+const WHATSAPP    = 'whatsapp';
+const SKYPE       = 'skype';
+const MOMO        = 'momo';
 class PublicController extends Controller
 {
     /**
@@ -137,9 +155,15 @@ class PublicController extends Controller
         ]);
 
         $data = $request->only(['social_id', 'name', 'social_value']);
-        $data['social_app'] = $request->social_value;
+
+        $social = Social::findOrFail($data['social_id']);
+
+        $data['social_app'] = $this->RegexSocial($data['social_value'], $social->type);
+
         $data['description'] = $request->social_value;
+
         $item = new SocialItem($data);
+
         Auth::guard('member')->user()->load('account')->account->items()->save($item);
 
         return redirect()->route('public.member.profile.social');
@@ -343,5 +367,158 @@ class PublicController extends Controller
     public function postUpload(Request $request)
     {
         return RvMedia::uploadFromEditor($request);
+    }
+    
+    /*
+     * Get User ID of social network
+     */
+    public function RegexSocial($url, $type)
+    {
+        switch ($type) {
+            case FACEBOOK:
+
+                $facebookPatternId = '/(?:https?:)?\/\/(?:www\.)facebook.com\/(?:profile.php\?id=)?(?P<id>[0-9]+)/m';
+
+                preg_match($facebookPatternId, $url, $id);
+
+                $facebookPatternUsername = '/(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?([\w\-]*)?/m';
+
+                preg_match($facebookPatternUsername, $url, $username);
+
+                return $profile = $id[1] ?? $username[1] ?? null;
+
+            case INSTAGRAM:
+
+                $instagramPattern = '/(?:https?:)?\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/(?P<username>[A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)/m';
+
+                preg_match($instagramPattern, $url, $id);
+
+                return $id[1] ?? $url;
+
+            case GITHUB:
+
+                $githubPattern = '/(?:https?:)?\/\/(?:www\.)?github\.com\/(?P<login>[A-z0-9_-]+)\/?/m';
+
+                preg_match($githubPattern, $url, $id);
+
+                return $id[1] ?? $url;
+
+            case YOUTUBE:
+
+                $youtubePatternChannel = '/(?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/channel\/(?P<id>[A-z0-9-\_]+)\/?/m';
+
+                preg_match($youtubePatternChannel, $url, $channel);
+
+                $youtubePatternUser = '/(?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/user\/(?P<username>[A-z0-9]+)\/?/m';
+
+                preg_match($youtubePatternUser, $url, $user);
+
+                $youtubePatternVideo = '/(?:https?:)?\/\/(?:(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)(?P<id>[A-z0-9\-\_]+)/m';
+
+                preg_match($youtubePatternVideo, $url, $video);
+
+                return $channel[1] ?? $user[1] ?? $video[1] ?? $url;
+
+            case TIKTOK:
+                // Pattern: (?:http|https)?\/\/(?:[A-z]+\.)?tiktok\.com\/@?(?!video|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?
+                $tiktokPattern = '/(?:http|https)?\/\/(?:[A-z]+\.)?tiktok\.com\/@?(?!video|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?';
+
+                preg_match($tiktokPattern, $url, $user);
+
+                return $user[1] ?? $url;
+
+            case PINTEREST:
+
+                $pinterestPattern = '/(?:(?:http|https):\/\/)?(?:www.)?pinterest.com\/(?:(?:\w)*#!\/)?(?:[?\w\-]*\/)?([\w\-]*)?/m';
+
+                preg_match($pinterestPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case LINKEDIN:
+
+                $linkinPattern = '/(?:https?:)?\/\/(?:[\w]+\.)?linkedin.com\/in\/(?P<permalink>[\w\-\_À-ÿ%]+)\/?/m';
+
+                preg_match($linkinPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case TWITTER:
+
+                $twitterPattern = '/(?:https?:)?\/\/(?:[A-z]+\.)?twitter\.com\/@?(?!home|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?/m';
+
+                preg_match($twitterPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case SNAPCHAT:
+
+                $snapchatPattern = '/(?:https?:)?\/\/(?:www\.)?snapchat\.com\/add\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+
+                preg_match($snapchatPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case ZALO:
+
+                $zaloPattern = '/(?:https?:)?\/\/(?:www\.)?zalo\.me\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+
+                preg_match($zaloPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case PHONE:
+
+                return $url;
+
+            case SMS:
+
+                return $url;
+
+            case EMAIL:
+
+                $emailPattern = '/(?:mailto:)?(?P<email>[A-z0-9_.+-]+@[A-z0-9_.-]+\.[A-z]+)/m';
+
+                preg_match($emailPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case SOUNDCLOUD:
+                $soundcloudPattern = '/(?:https?:)?\/\/(?:www\.)?soundcloud.com\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+
+                preg_match($soundcloudPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case TELEGRAM:
+
+                $telegramPattern = '/(?:https?:)?\/\/(?:t(?:elegram)?\.me|telegram\.org)\/(?P<username>[a-z0-9\_]{5,32})\/?/m';
+
+                preg_match($telegramPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case WHATSAPP:
+
+                $whatsappPattern = '/(?:https?:)?\/\/(?:www\.)?wa\.me\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+
+                preg_match($whatsappPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            case SKYPE:
+
+                return $url;
+
+            case MOMO:
+
+                $momoPattern = '/(?:https?:)?\/\/(?:www\.)?nhantien\.momo\.vn\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+
+                preg_match($momoPattern, $url, $username);
+
+                return $username[1] ?? $url;
+
+            default: return $url;
+        }
     }
 }

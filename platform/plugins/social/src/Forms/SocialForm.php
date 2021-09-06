@@ -27,6 +27,14 @@ class SocialForm extends FormAbstract
                     'data-counter' => 120,
                 ],
             ])
+            ->add('type', 'text', [
+                'label'      => __('Type'),
+                'label_attr' => ['class' => 'control-label required'],
+                'attr'       => [
+                    'placeholder'  => __('Type'),
+                    'data-counter' => 120,
+                ],
+            ])
             ->add('is_bank', 'onOff', [
                 'label'         => __('is Bank account'),
                 'label_attr'    => ['class' => 'control-label'],

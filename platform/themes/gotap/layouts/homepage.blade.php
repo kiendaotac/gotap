@@ -5,8 +5,11 @@
 
 <body class="stretched side-push-panel">
 
+<!--
 <div class="body-overlay"></div>
+-->
 
+<!--
 <div id="side-panel" class="bgchanger">
 
     <div id="side-panel-trigger-close" class="side-panel-trigger"><a href="#"><i class="icon-line-cross"></i></a>
@@ -83,6 +86,7 @@
     </div>
 
 </div>
+-->
 
 <!-- Document Wrapper
 ============================================= -->
@@ -109,9 +113,15 @@
             let product = owlWatch.find('.active img').data('product')
             if (product) {
                 owlWatchbg.css({ 'background-color': product.color })
+
                 productName.text(product.name)
+                productName.attr('style', 'letter-spacing:10px; font-size: 18px; color: ' + product.name_color + ' !important');
+
                 productDescription.text(product.description)
+                productDescription.css({ 'color': product.description_color })
+
                 productPrice.text(new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price))
+                productPrice.css({ 'color': product.price_color })
             }
             /*var bgcolor = owlWatch.find('.active img').attr('data-bg');
             owlWatchbg.css({ 'background-color': bgcolor });*/

@@ -8,9 +8,9 @@
                 <div class="row align-items-center">
                     <div class="col-md-6 text-center text-md-start">
                         <div class="emphasis-title mb-0">
-                            <span class="text-uppercase d-block text-black-50 product-name" style="letter-spacing:10px; font-size: 18px; color: {{ $products->first() ? $products->first()->name_color : null }} ">{{ $products->first()->name ?? null }}</span>
+                            <span class="text-uppercase d-block text-black-50 product-name" style="letter-spacing:10px; font-size: 18px; color: {{ $products->first() ? $products->first()->name_color : null }}!important; ">{{ $products->first()->name ?? null }}</span>
                             <h2 class="mt-2 fw-semibold font-secondary" style="font-size: 64px;color: {{ $products->first() ? $products->first()->description_color : 'E25B45' }}; line-height: 1.3; letter-spacing: -2px;">
-                                <u class="product-description">{{ $products->first()->description ?? null }}</u>
+                                <strong class="product-description" style="font-family: 'Roboto Slab', serif;">{{ $products->first()->description ?? null }}</strong>
                             </h2>
                             <h2 class="fw-bold mt-4 product-price" style="color: {{ $products->first() ? $products->first()->price_color : null }};">{{ number_format($products->first()->price ?? 0, 0, ',','.') }} ₫</h2>
 {{--                            <a href="#" data-animate="fadeInUp" data-delay="600" class="button button-circle button-white button-light button-large text-white mt-4 nott ls0" style="background-color: #E25B45">View Details</a>--}}
@@ -22,17 +22,17 @@
                              data-nav="false"
                              data-pagi="true"
                              data-items="1"
-                             data-autoplay="5000"
-                             data-speed="1000"
+                             data-autoplay="8000"
+                             data-speed="800"
                              data-loop="true">
                             @foreach($products as $product)
                                 <img src="{{ RvMedia::getImageUrl($product->image) }}" alt="{{ $product->name }}" data-product='{{ $product }}'>
                             @endforeach
                         </div>
 
-                        <div id="oc-watch-bg"
+<!--                        <div id="oc-watch-bg"
                              style="background: #E25B45; width: 360px; height: 360px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 1; border-radius: 50%;">
-                        </div>
+                        </div>-->
                     </div>
                 </div>
 
@@ -54,110 +54,110 @@
 <section id="content">
     <div class="content-wrap py-0">
         <div id="section-about" class="center page-section">
+            <div class="container">
+                <div class="w-100 text-center">
+                    <h6></h6>
+                </div>
+            </div>
             <div class="container clearfix">
-                <h2 class="mx-auto bottommargin font-body" style="max-width: 700px; font-size: 40px;">
-                    A digital web studio creating stunning &amp; engaging online experiences</h2>
-                <p class="lead mx-auto bottommargin" style="max-width: 800px;">
-                    Ford Foundation reduce child mortality fight against oppression refugee disruption pursue these aspirations effect.
-                    Free-speech Nelson Mandela change liberal; challenges of our times sustainability
-                    institutions.</p>
-                <p class="bottommargin" style="font-size: 16px;">
-                    <a href="#" data-scrollto="#section-services" data-easing="easeInOutExpo" data-speed="1250" data-offset="70" class="more-link">
-                        Learn more
-                        <i class="icon-angle-right"></i>
-                    </a>
-                </p>
+                <h2 class="mx-auto bottommargin font-body" style="max-width: 700px; font-size: 40px;background-image: linear-gradient(to right, #f8d05a, #ea4157, #6584ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Giới Thiệu Về Thẻ Thông Minh Gotap.
+                </h2>
+                <ul class="lead mx-auto bottommargin check-list" style="max-width: 1000px; text-align: left;">
+                    <li>Gotap mang đến cho bạn 1 giải pháp kết nối với những người xung quanh chỉ bằng 1 chạm.</li>
+                    <li>Chỉ cần chạm nhẹ, không cần qua ứng dụng, bạn có thể chia sẻ thông tin liên hệ của bạn ngay tức thì với bất kì ai bạn muốn.</li>
+                    <li>Không thu phí dịch vụ hàng tháng, tuổi thọ lên đến 50 năm.</li>
+                    <li>An toàn, không yêu cầu người dùng cung cấp quyền truy cập mật khẩu của các trang mạng xã hội.</li>
+                    <li>Gây ấn tượng, tạo sự khác biệt với đối phương.</li>
+                    <li>Tương thích với tất cả các dòng điện thoại Androi,IOS hỗ trợ NFC phổ biến nhất hiện nay.</li>
+                </ul>
+
                 <div class="clear"></div>
-                <div class="row topmargin-lg mx-auto" style="max-width: 1000px;">
-                    <div class="col-md-4 mb-5">
-                        <div class="team">
-                            <div class="team-image">
-                                <img src="{{ Theme::asset()->url('homepage/assets/images/team/1.jpg') }}" alt="John Doe">
-                                <div class="bg-overlay">
-                                    <div class="bg-overlay-content align-items-end" data-hover-animate="fadeIn" data-hover-speed="400">
-                                        <a href="#" class="social-icon si-borderless si-small si-facebook" title="Facebook">
-                                            <i class="icon-facebook"></i>
-                                            <i class="icon-facebook"></i>
-                                        </a>
-                                        <a href="#" class="social-icon si-borderless si-small si-twitter" title="Twitter">
-                                            <i class="icon-twitter"></i>
-                                            <i class="icon-twitter"></i>
-                                        </a>
-                                        <a href="#" class="social-icon si-borderless si-small si-github" title="Github">
-                                            <i class="icon-github"></i>
-                                            <i class="icon-github"></i>
-                                        </a>
+            </div>
+        </div>
+        <div id="section-connect" class="page-section pt-0">
+            <div class="container clearfix">
+                <div class="row align-items-stretch">
+                    <div class="col-lg-4 d-none d-md-block">
+                        <div class="video-container">
+                            <video autoplay muted loop>
+                                <source src="https://shop.tappi.vn/wp-content/uploads/2021/03/set-up-the-ca-nhan-thong-minh-tappi.mp4" type="video/mp4" />
+                            </video>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <h2 class="mx-auto bottommargin font-body" style="max-width: 700px; font-size: 40px;background-image: linear-gradient(to right, #f8d05a, #ea4157, #6584ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            Giao diện quản trị trực quan
+                        </h2>
+                        <div class="row align-items-stretch clearfix">
+                            <div class="col-lg-6 col-md-6 col-padding">
+                                <div class="feature-box fbox-center fbox-dark fbox-plain">
+                                    <div class="fbox-icon">
+                                        <i class="icon-et-mobile op-gradient-icon"></i>
                                     </div>
-                                    <div class="bg-overlay-bg" data-hover-animate="fadeIn" data-hover-speed="400"></div>
+                                    <div class="fbox-content fbox-content-sm">
+                                        <h2>Dashboard</h2>
+                                        <p style="font-weight: 300; font-size: 18px;line-height: 26px; text-align: left">Trang quản lý mạnh mẽ, có nhiều tính năng cho bạn tha hộ cá nhân hoá</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="team-desc team-desc-bg">
-                                <div class="team-title">
-                                    <h4>John Doe</h4><span>CEO</span>
+                            <div class="col-lg-6 col-md-6 col-padding">
+                                <div class="feature-box fbox-center fbox-dark fbox-plain">
+                                    <div class="fbox-icon">
+                                        <i class="icon-et-presentation op-gradient-icon"></i>
+                                    </div>
+                                    <div class="fbox-content fbox-content-sm">
+                                        <h2>Profile</h2>
+                                        <p style="font-weight: 300; font-size: 18px;line-height: 26px; text-align: left">Trang thông tin cá nhân trực quan, dễ dàng sử dụng</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-5">
-                        <div class="team">
-                            <div class="team-image">
-                                <img src="{{ Theme::asset()->url('homepage/assets/images/team/2.jpg') }}" alt="Josh Clark">
-                                <div class="bg-overlay">
-                                    <div class="bg-overlay-content align-items-end" data-hover-animate="fadeIn"
-                                         data-hover-speed="400">
-                                        <a href="#" class="social-icon si-borderless si-small si-twitter"
-                                           title="Twitter">
-                                            <i class="icon-twitter"></i>
-                                            <i class="icon-twitter"></i>
-                                        </a>
-                                        <a href="#" class="social-icon si-borderless si-small si-linkedin"
-                                           title="LinkedIn">
-                                            <i class="icon-linkedin"></i>
-                                            <i class="icon-linkedin"></i>
-                                        </a>
-                                        <a href="#" class="social-icon si-borderless si-small si-flickr"
-                                           title="Flickr">
-                                            <i class="icon-flickr"></i>
-                                            <i class="icon-flickr"></i>
-                                        </a>
+                </div>
+            </div>
+        </div>
+        <div id="section-profile" class="page-section pt-0">
+            <div class="container clearfix">
+                <div class="row align-items-stretch">
+                    <div class="col-lg-8">
+                        <h2 class="mx-auto bottommargin font-body" style="max-width: 700px; font-size: 40px;background-image: linear-gradient(to right, #f8d05a, #ea4157, #6584ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            Kết nối dễ dàng và nhanh chóng
+                        </h2>
+                        <div class="row align-items-stretch clearfix">
+                            <div class="col-lg-6 col-md-6 col-padding">
+                                <div class="feature-box fbox-center fbox-dark fbox-plain">
+                                    <div class="fbox-icon">
+                                        <i class="icon-et-mobile op-gradient-icon"></i>
                                     </div>
-                                    <div class="bg-overlay-bg" data-hover-animate="fadeIn" data-hover-speed="400"></div>
+                                    <div class="fbox-content fbox-content-sm">
+                                        <h2>NFC</h2>
+                                        <p style="font-weight: 300; font-size: 18px;line-height: 26px; text-align: left">Chạm nhẹ smartphone vào thẻ Gotap là bạn đã có thể chia sẻ những thông tin mình muốn cho bạn bè, đối tác, khách hàng..</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="team-desc team-desc-bg">
-                                <div class="team-title">
-                                    <h4>Mary Jane</h4><span>Co-Founder</span>
+                            <div class="col-lg-6 col-md-6 col-padding">
+                                <div class="feature-box fbox-center fbox-dark fbox-plain">
+                                    <div class="fbox-icon">
+                                        <i class="icon-et-presentation op-gradient-icon"></i>
+                                    </div>
+                                    <div class="fbox-content fbox-content-sm">
+                                        <h2>Mã QR</h2>
+                                        <p style="font-weight: 300; font-size: 18px;line-height: 26px; text-align: left">Sử dụng camera smartphone để quét mã QR ở mặt sau thẻ</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-5">
-                        <div class="team">
-                            <div class="team-image">
-                                <img src="{{ Theme::asset()->url('homepage/assets/images/team/3.jpg') }}" alt="Mary Jane">
-                                <div class="bg-overlay">
-                                    <div class="bg-overlay-content align-items-end" data-hover-animate="fadeIn" data-hover-speed="400">
-                                        <a href="#" class="social-icon si-borderless si-small si-twitter" title="Twitter">
-                                            <i class="icon-twitter"></i>
-                                            <i class="icon-twitter"></i>
-                                        </a>
-                                        <a href="#" class="social-icon si-borderless si-small si-vimeo" title="Vimeo">
-                                            <i class="icon-vimeo"></i>
-                                            <i class="icon-vimeo"></i>
-                                        </a>
-                                        <a href="#" class="social-icon si-borderless si-small si-instagram" title="Instagram">
-                                            <i class="icon-instagram"></i>
-                                            <i class="icon-instagram"></i>
-                                        </a>
-                                    </div>
-                                    <div class="bg-overlay-bg" data-hover-animate="fadeIn" data-hover-speed="400"></div>
-                                </div>
-                            </div>
-                            <div class="team-desc team-desc-bg">
-                                <div class="team-title">
-                                    <h4>Josh Clark</h4><span>Sales</span>
-                                </div>
-                            </div>
+{{--                    <div class="col-lg-4 d-none d-md-block" style="background: url('{{ Theme::asset()->url('homepage/assets/images/services/main-bg.jpg') }}') center center no-repeat; background-size: cover;">--}}
+                    <div class="col-lg-4 d-none d-md-block">
+                        <div class="video-container">
+                            <video autoplay muted loop>
+                                <source src="https://shop.tappi.vn/wp-content/uploads/2021/03/the-ca-nhan-thong-minh-tappi-card.mp4" type="video/mp4" />
+                            </video>
+<!--                            <div class="caption">
+                                <h2>Your caption here</h2>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -205,26 +205,26 @@
                 </div>
                 <div class="col-lg-4 col-md-6" style="background-color: #F5F5F5;">
                     <div class="col-padding">
-                        <h3 class="font-body fw-normal ls1">Địa chỉ</h3>
+                        <h3 class="font-body fw-normal ls1">Thông tin liên hệ</h3>
                         <div style="font-size: 16px; line-height: 1.7;">
                             <address style="line-height: 1.7;">
-                                <strong>North America:</strong>
+                                <strong>Địa chỉ:</strong>
                                 <br>
-                                795 Folsom Ave, Suite 600
-                                <br>
-                                San Francisco, CA 94107
-                                <br>
+                                {{ theme_option('address') }}
                             </address>
                             <div class="clear topmargin-sm"></div>
+                            <div class="clear topmargin"></div>
                             <address style="line-height: 1.7;">
-                                <strong>Europe:</strong><br>
-                                795 Folsom Ave, Suite 600<br>
-                                San Francisco, CA 94107<br>
+                                <strong>Điện thoại:</strong>
+                                <br>
+                                {{ theme_option('phone') }}
                             </address>
                             <div class="clear topmargin"></div>
-                            <abbr title="Phone Number"><strong>Phone:</strong></abbr> (1) 8547 632521<br>
-                            <abbr title="Fax"><strong>Fax:</strong></abbr> (1) 11 4752 1433<br>
-                            <abbr title="Email Address"><strong>Email:</strong></abbr> info@canvas.com
+                            <address style="line-height: 1.7;">
+                                <strong>Email:</strong>
+                                <br>
+                                {{ theme_option('email') }}
+                            </address>
                         </div>
                     </div>
                 </div>
@@ -233,7 +233,8 @@
                 <div class="mx-auto topmargin" style="max-width: 850px;">
                     <div class="form-widget">
                         <div class="form-result"></div>
-                        <form class="row mb-0" id="template-contactform" name="template-contactform" action="" method="post">
+                        <form class="row mb-0" id="template-contactform" name="template-contactform" action="{{ route('public.send.contact') }}" method="post">
+                            @csrf
                             <div class="form-process">
                                 <div class="css3-spinner">
                                     <div class="css3-spinner-scale-ripple">
@@ -244,34 +245,29 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mb-4">
-                                <input type="text" id="template-contactform-name" name="template-contactform-name" value="" class="sm-form-control border-form-control required" placeholder="Name" />
+                                <input type="text" id="template-contactform-name" name="name" value="" class="sm-form-control border-form-control required" placeholder="Họ Tên" />
                             </div>
                             <div class="col-md-6 mb-4">
-                                <input type="email" id="template-contactform-email" name="template-contactform-email" value="" class="required email sm-form-control border-form-control" placeholder="Email Address" />
+                                <input type="email" id="template-contactform-email" name="email" value="" class="required email sm-form-control border-form-control" placeholder="Địa chỉ Email" />
                             </div>
                             <div class="w-100"></div>
                             <div class="col-md-4 mb-4">
-                                <input type="text" id="template-contactform-phone" name="template-contactform-phone" value="" class="sm-form-control border-form-control" placeholder="Phone" />
+                                <input type="text" id="template-contactform-phone" name="phone" value="" class="sm-form-control border-form-control" placeholder="Số điện thoại" />
                             </div>
                             <div class="col-md-8 mb-4">
-                                <input type="text" id="template-contactform-subject" name="subject" value="" class="required sm-form-control border-form-control" placeholder="Subject" />
+                                <input type="text" id="template-contactform-subject" name="subject" value="" class="required sm-form-control border-form-control" placeholder="Chủ đề" />
                             </div>
                             <div class="w-100"></div>
                             <div class="col-12 mb-4">
-                                <textarea class="required sm-form-control border-form-control" id="template-contactform-message" name="template-contactform-message" rows="7" cols="30" placeholder="Your Message"></textarea>
+                                <textarea class="required sm-form-control border-form-control" id="template-contactform-message" name="content" rows="7" cols="30" placeholder="Nội dung" style="height: 100px!important;"></textarea>
                             </div>
                             <div class="col-12 center mb-4">
-                                <button class="button button-border button-circle fw-medium ms-0 topmargin-sm" type="submit" id="template-contactform-submit" name="template-contactform-submit" value="submit">Send Message</button>
+                                <button class="button button-border button-circle fw-medium ms-0 topmargin-sm" type="submit" id="template-contactform-submit" name="template-contactform-submit" value="submit">Gửi</button>
                                 <br>
                                 <small style="display: block; font-size: 13px; margin-top: 15px;">
-                                    We'll do our best to get back to you within 6-8 working hours.
+                                    Hãy nhập thông tin để chung tôi liên hệ với bạn.
                                 </small>
                             </div>
-                            <div class="w-100"></div>
-                            <div class="col-12 d-none">
-                                <input type="text" id="template-contactform-botcheck" name="template-contactform-botcheck" value="" class="sm-form-control" />
-                            </div>
-                            <input type="hidden" name="prefix" value="template-contactform-">
                         </form>
                     </div>
                 </div>

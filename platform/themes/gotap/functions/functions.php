@@ -155,7 +155,49 @@ theme_option()
         'desc'       => __('Site Information'),
         'id'         => 'opt-text-subsection-information',
         'subsection' => true,
-        'icon'       => 'fa fa-share-alt',
+        'icon'       => 'fa fa-info',
+    ])
+    ->setField([
+        'id'         => 'address',
+        'section_id' => 'opt-text-subsection-information',
+        'type'       => 'text',
+        'label'      => __('Address'),
+        'attributes' => [
+            'name'    => 'address',
+            'value'   => null,
+            'options' => [
+                'class'       => 'form-control',
+                'placeholder' => __('Address'),
+            ],
+        ],
+    ])
+    ->setField([
+        'id'         => 'phone',
+        'section_id' => 'opt-text-subsection-information',
+        'type'       => 'text',
+        'label'      => __('Phone'),
+        'attributes' => [
+            'name'    => 'phone',
+            'value'   => null,
+            'options' => [
+                'class'       => 'form-control',
+                'placeholder' => __('Phone'),
+            ],
+        ],
+    ])
+    ->setField([
+        'id'         => 'email',
+        'section_id' => 'opt-text-subsection-information',
+        'type'       => 'text',
+        'label'      => __('Email'),
+        'attributes' => [
+            'name'    => 'email',
+            'value'   => null,
+            'options' => [
+                'class'       => 'form-control',
+                'placeholder' => __('Email'),
+            ],
+        ],
     ])
 ;
 add_action('init', function () {

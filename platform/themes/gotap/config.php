@@ -75,6 +75,56 @@ return [
             'default' => function ($theme) {
 
             },
+            'tappi-master' => function($theme) {
+                $theme->asset()
+                ->usePath()->add('tailwind', 'layoutone/assets/css/tailwind.min.css')
+                ->usePath()->add('font-awesone', 'layoutone/assets/css/font-awesome.css')
+                ->usePath()->add('style', 'layoutone/assets/css/styles.css');
+
+            $theme->asset()->container('footer')
+                ->usePath()->add('jquery', 'layoutone/assets/js/jquery-3.4.1.min.js')
+                ->usePath()->add('jquery-ui', 'layoutone/assets/js/jquery-ui.min.js', 'jquery')
+                ->usePath()->add('main', 'layoutone/assets/js/main.js', 'jquery-ui')
+                ->usePath()->add('touch-punch', 'layoutone/assets/js/jquery.ui.touch-punch.min.js', 'jquery')
+                ->usePath()->add('select2', 'layoutone/assets/js/select2.min.js', 'jquery');
+            },'tappi' => function($theme) {
+                $theme->asset()
+                ->usePath()->add('tailwind', 'layoutone/assets/css/tailwind.min.css')
+                ->usePath()->add('font-awesone', 'layoutone/assets/css/font-awesome.css')
+                ->usePath()->add('style', 'layoutone/assets/css/styles.css');
+
+            $theme->asset()->container('footer')
+                ->usePath()->add('jquery', 'layoutone/assets/js/jquery-3.4.1.min.js')
+                ->usePath()->add('jquery-ui', 'layoutone/assets/js/jquery-ui.min.js', 'jquery')
+                ->usePath()->add('main', 'layoutone/assets/js/main.js', 'jquery-ui')
+                ->usePath()->add('select2', 'layoutone/assets/js/select2.min.js', 'jquery');
+            },'tappi-auth' => function($theme) {
+                $theme->asset()
+                ->usePath()->add('tailwind', 'layoutone/assets/css/tailwind.min.css')
+                ->usePath()->add('font-awesone', 'layoutone/assets/css/font-awesome.css')
+                ->usePath()->add('style', 'layoutone/assets/css/styles.css');
+
+            $theme->asset()->container('footer')
+                ->usePath()->add('jquery', 'layoutone/assets/js/jquery-3.4.1.min.js')
+                ->usePath()->add('jquery-ui', 'layoutone/assets/js/jquery-ui.min.js', 'jquery')
+                ->usePath()->add('main', 'layoutone/assets/js/main.js', 'jquery-ui')
+                ->usePath()->add('select2', 'layoutone/assets/js/select2.min.js', 'jquery');
+            },
+            'tappi-profile' => function($theme) {
+                $theme->asset()
+                ->usePath()->add('tailwind', 'layoutone/assets/css/tailwind.min.css')
+                ->usePath()->add('font-awesone', 'layoutone/assets/css/font-awesome.css')
+                ->usePath()->add('style', 'layoutone/assets/css/styles.css');
+//                ->usePath()->add('navigatorJS', 'layoutone/assets/js/navigatorJS.min.js');
+
+                $theme->asset()->container('footer')
+                    ->usePath()->add('jquery', 'layoutone/assets/js/jquery-3.4.1.min.js')
+                    ->usePath()->add('jquery-ui', 'layoutone/assets/js/jquery-ui.min.js', 'jquery')
+                    ->usePath()->add('navigatorJS', 'layoutone/assets/js/navigatorJS.min.js')
+                    ->usePath()->add('select2', 'layoutone/assets/js/select2.min.js')
+                    ->usePath()->add('main', 'layoutone/assets/js/main.js', 'jquery-ui')
+                    ->usePath()->add('mobile', 'layoutone/assets/js/mobile.js');
+            },
             'tappi-add' => function ($theme) {
                 $theme->asset()
                     ->usePath()->add('tailwind', 'layoutone/assets/css/tailwind.min.css')

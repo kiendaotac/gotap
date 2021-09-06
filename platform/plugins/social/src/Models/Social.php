@@ -22,6 +22,7 @@ class Social extends BaseModel
      */
     protected $fillable = [
         'name',
+        'type',
         'icon',
         'is_bank',
         'status',

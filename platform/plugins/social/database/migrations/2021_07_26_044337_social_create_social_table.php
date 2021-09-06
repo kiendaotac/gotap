@@ -15,6 +15,8 @@ class SocialCreateSocialTable extends Migration
         Schema::create('socials', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
+            $table->string('type', 255);
+            $table->string('hint', 255);
             $table->string('icon', 255);
             $table->boolean('is_bank')->default(false);
             $table->string('status', 60)->default('published');

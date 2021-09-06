@@ -39,28 +39,25 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="widget clearfix">
-                        <h4>Contact</h4>
-                        <p class="lead">795 Folsom Ave, Suite 600<br>San Francisco, CA 94107</p>
+                        <h4>Liên hệ</h4>
+                        <p class="lead">{{ theme_option('address') }}</p>
+                        <p class="lead"><a href="tel:{{ theme_option('phone') }}">{{ theme_option('phone') }}</a></p>
+                        <p class="lead"><a href="mailto:{{ theme_option('email') }}">{{ theme_option('email') }}</a></p>
                         <div class="center topmargin-sm">
-                            <a href="#" class="social-icon inline-block border-0 si-small si-facebook"
+                            <a href="{{ theme_option('facebook') }}" class="social-icon inline-block border-0 si-small si-facebook"
                                title="Facebook">
                                 <i class="icon-facebook"></i>
                                 <i class="icon-facebook"></i>
                             </a>
-                            <a href="#" class="social-icon inline-block border-0 si-small si-twitter"
+                            <a href="{{ theme_option('twitter') }}" class="social-icon inline-block border-0 si-small si-twitter"
                                title="Twitter">
                                 <i class="icon-twitter"></i>
                                 <i class="icon-twitter"></i>
                             </a>
-                            <a href="#" class="social-icon inline-block border-0 si-small si-github"
-                               title="Github">
-                                <i class="icon-github"></i>
-                                <i class="icon-github"></i>
-                            </a>
-                            <a href="#" class="social-icon inline-block border-0 si-small si-pinterest"
-                               title="Pinterest">
-                                <i class="icon-pinterest"></i>
-                                <i class="icon-pinterest"></i>
+                            <a href="{{ theme_option('tiktok') }}" class="social-icon inline-block border-0 si-small si-tiktok"
+                               title="Tiktok">
+                                <i class="icon-tiktok"></i>
+                                <i class="icon-tiktok"></i>
                             </a>
                         </div>
                     </div>
@@ -73,7 +70,7 @@
     </div>
     <div id="copyrights">
         <div class="container center clearfix">
-            Copyrights Canvas 2020 | All Rights Reserved
+            {{ theme_option('copyright') }}
         </div>
     </div>
 </footer>

@@ -30,10 +30,10 @@ class AccountCreateAccountTable extends Migration
         });
         Schema::create('social_items', function (Blueprint $table){
            $table->id();
-           $table->string('social_value');
-           $table->string('social_app');
            $table->string('name');
            $table->string('description')->nullable();
+           $table->string('social_value')->nullable();
+            $table->string('social_app')->nullable();
            $table->integer('order')->default(0)->nullable();
            $table->foreignId('account_id')->constrained('accounts');
            $table->foreignId('social_id')->constrained('socials');
