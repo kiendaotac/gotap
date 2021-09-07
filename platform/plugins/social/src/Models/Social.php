@@ -25,6 +25,7 @@ class Social extends BaseModel
         'type',
         'icon',
         'is_bank',
+        'hint',
         'status',
     ];
 
