@@ -167,21 +167,23 @@ class RegisterController extends Controller
         $account = Account::where('uuid', $data['uuid'])->where('code', Str::upper($data['code']))->where('status', BaseStatusEnum::PENDING)->first();
 
         if (!$account) {
+
             return redirect()->back()->withInput()->withErrors(['code'=>'Code is not valid']);
+
         }
         event(new Registered($member = $this->create($data, $account)));
 
-        if (setting('verify_account_email', config('plugins.member.general.verify_email'))) {
-            $this->sendConfirmationToUser($member);
-            return $this->registered($request, $member)
-                ?: $response->setNextUrl($this->redirectPath())->setMessage(trans('plugins/member::member.confirmation_info'));
-        }
+//        if (setting('verify_account_email', config('plugins.member.general.verify_email'))) {
+//            $this->sendConfirmationToUser($member);
+//            return $this->registered($request, $member)
+//                ?: $response->setNextUrl($this->redirectPath())->setMessage(trans('plugins/member::member.confirmation_info'));
+//        }
 
         $member->confirmed_at = now();
         $this->memberRepository->createOrUpdate($member);
         $this->guard()->login($member);
         return $this->registered($request, $member)
-            ?: $response->setNextUrl($this->redirectPath());
+            ?: $response->setNextUrl(route('public.member.profile.index'));
     }
 
     /**

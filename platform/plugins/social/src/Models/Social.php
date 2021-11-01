@@ -5,6 +5,8 @@ namespace Botble\Social\Models;
 use Botble\Base\Traits\EnumCastable;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Models\BaseModel;
+use Botble\Icon\Models\Icon;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Social extends BaseModel
 {
@@ -23,7 +25,6 @@ class Social extends BaseModel
     protected $fillable = [
         'name',
         'type',
-        'icon',
         'is_bank',
         'hint',
         'status',
@@ -35,4 +36,9 @@ class Social extends BaseModel
     protected $casts = [
         'status' => BaseStatusEnum::class,
     ];
+
+    public function icons(): HasMany
+    {
+        return $this->hasMany(Icon::class, 'social_id', 'id');
+    }
 }

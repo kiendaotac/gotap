@@ -14,16 +14,16 @@ register_sidebar([
 
 theme_option()
     ->setField([
-        "id" => "logo-dark",
+        "id" => "logo-qr",
         "type" => "mediaImage",
-        "label" => "Logo Dark",
+        "label" => "Logo QR Code",
         "attributes" => [
-          "name" => "logo-dark",
+          "name" => "logo-qr",
           "value" => null,
         ],
         "section_id" => "opt-text-subsection-logo",
         "priority" => 11,
-        'helper' => __('Logo dark mode'),
+        'helper' => __('Logo in QR Code'),
     ])
     ->setField([
         'id'         => 'copyright',
@@ -72,6 +72,37 @@ theme_option()
         ],
         'helper' => __('Avatar mặc định của user'),
         "priority" => 20,
+    ])->setField([
+        'id'         => 'default-cover',
+        'section_id' => 'opt-text-subsection-general',
+        'type'       => 'mediaImage',
+        'label'      => __('Default Cover'),
+        'attributes' => [
+            'name'  => 'default-cover',
+            'value' => 'covers/default-cover.png',
+        ],
+        'helper' => __('Cover mặc định của user'),
+        "priority" => 21,
+    ])->setField([
+        'id'         => 'login-background',
+        'section_id' => 'opt-text-subsection-general',
+        'type'       => 'mediaImage',
+        'label'      => __('Login Background'),
+        'attributes' => [
+            'name'  => 'login-background',
+        ],
+        'helper' => __('Hình nên login'),
+        "priority" => 22,
+    ])->setField([
+        'id'         => 'video-background',
+        'section_id' => 'opt-text-subsection-general',
+        'type'       => 'mediaFile',
+        'label'      => __('Video Background'),
+        'attributes' => [
+            'name'  => 'video-background',
+        ],
+        'helper' => __('Video background ngoài màn hình nền'),
+        "priority" => 23,
     ])
     ->setSection([
         'title'      => __('Social'),
@@ -95,16 +126,16 @@ theme_option()
         ],
     ])
     ->setField([
-        'id'         => 'twitter',
+        'id'         => 'shopee',
         'section_id' => 'opt-text-subsection-social',
         'type'       => 'text',
-        'label'      => 'Twitter',
+        'label'      => 'Shopee',
         'attributes' => [
-            'name'    => 'twitter',
+            'name'    => 'shopee',
             'value'   => null,
             'options' => [
                 'class'       => 'form-control',
-                'placeholder' => 'https://twitter.com/@username',
+                'placeholder' => 'https://shopee.vn/@username',
             ],
         ],
     ])
@@ -196,6 +227,20 @@ theme_option()
             'options' => [
                 'class'       => 'form-control',
                 'placeholder' => __('Email'),
+            ],
+        ],
+    ])
+    ->setField([
+        'id'         => 'bank-info',
+        'section_id' => 'opt-text-subsection-information',
+        'type'       => 'editor',
+        'label'      => __('Bank information'),
+        'attributes' => [
+            'name'    => 'bank-info',
+            'value'   => null,
+            'options' => [
+                'class'       => 'form-control',
+                'placeholder' => __('Bank information'),
             ],
         ],
     ])

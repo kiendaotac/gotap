@@ -62,6 +62,7 @@ class AccountForm extends FormAbstract
                     'class' => 'form-control select-full',
                 ],
                 'choices'    => BaseStatusEnum::labels(),
+                'selected'   => BaseStatusEnum::PENDING
             ])
             ->setBreakFieldPoint('status');
     }

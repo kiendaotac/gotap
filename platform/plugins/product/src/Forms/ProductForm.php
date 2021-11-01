@@ -39,7 +39,7 @@ class ProductForm extends FormAbstract
                 'label_attr' => ['class' => 'control-label required'],
                 'attr'       => [
                     'placeholder'  => trans('core/base::forms.description'),
-                    'data-counter' => 120,
+                    'data-counter' => 10000,
                 ],
             ])
             ->add('description_color', 'color', [

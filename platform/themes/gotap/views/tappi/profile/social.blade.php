@@ -30,10 +30,10 @@
                             <div class="w-full relative bg-white mb-6 social-card rounded-lg">
                                 <div class="flex px-4 py-1 flex-auto items-center">
                                     <div class="text-white text-center inline-flex w-12 h-12">
-                                        <img class="rounded-lg h-12" src="{{ RvMedia::getImageUrl($item->social->icon) }}" alt="{{ $item->social->name }}">
+                                        <img class="rounded-lg h-12" src="{{ RvMedia::getImageUrl($item->social->icon) }}" alt="{{ $item->name }}">
                                     </div>
                                     <div class="relative w-full pl-4 m-auto max-w-full flex-grow flex-1">
-                                        <h5 class="text-gray-700 font-semibold m-auto text-base text-center">{{ $item->social->name }}</h5>
+                                        <h5 class="text-gray-700 font-semibold m-auto text-base text-center">{{ $item->name }}</h5>
                                     </div>
                                     <div class="edit-social-item-button cursor-pointer pl-6 pr-1">
                                         <a href="{{ route('public.member.profile.social.edit', ['id' => $item->id]) }}">

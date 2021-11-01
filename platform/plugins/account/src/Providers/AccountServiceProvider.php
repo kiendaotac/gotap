@@ -31,12 +31,13 @@ class AccountServiceProvider extends ServiceProvider
             ->loadAndPublishConfigurations(['permissions'])
             ->loadMigrations()
             ->loadAndPublishTranslations()
+            ->loadAndPublishViews()
             ->loadRoutes(['web']);
 
         Event::listen(RouteMatched::class, function () {
-            if (defined('LANGUAGE_MODULE_SCREEN_NAME')) {
+            /*if (defined('LANGUAGE_MODULE_SCREEN_NAME')) {
                 \Language::registerModule([Account::class]);
-            }
+            }*/
 
             dashboard_menu()
                 ->registerItem([

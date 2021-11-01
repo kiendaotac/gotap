@@ -44,18 +44,19 @@
                     </li>
                     <li class="flex items-center">
 
-                        <a class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150" href="{{ asset('/') }}">
-                            Go to shop
+                        <a class="bg-white text-gray-800 active:bg-gray-100 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150" href="{{ route('public.single') }}">
+                            {{ __('Go to shop') }}
                             <i class="fas fa-arrow-alt-circle-right"></i>
                         </a>
                     </li>
+
                 </ul>
             </div>
         </div>
     </nav>
     <main>
         <section class="relative w-full h-full py-32 min-h-screen">
-            <div class="absolute top-0 w-full h-full bg-gray-900 bg-no-repeat bg-full" style="background-image:url('{{ Theme::asset()->url('layoutone/assets/images/register-background.png') }}')"></div>
+            <div class="absolute top-0 w-full h-full bg-gray-900 bg-no-repeat bg-full" style="background-image:url('{{ theme_option('login-background') ? RvMedia::getImageUrl(theme_option('login-background')) : Theme::asset()->url('layoutone/assets/images/register-background.png') }}')"></div>
             {!! Theme::content() !!}
             {!! Theme::partial('tappi-auth.footer') !!}
         </section>

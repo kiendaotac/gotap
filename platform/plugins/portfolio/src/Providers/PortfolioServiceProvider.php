@@ -34,9 +34,9 @@ class PortfolioServiceProvider extends ServiceProvider
             ->loadRoutes(['web']);
 
         Event::listen(RouteMatched::class, function () {
-            if (defined('LANGUAGE_MODULE_SCREEN_NAME')) {
+            /*if (defined('LANGUAGE_MODULE_SCREEN_NAME')) {
                 \Language::registerModule([Portfolio::class]);
-            }
+            }*/
 
             dashboard_menu()->registerItem([
                 'id'          => 'cms-plugins-portfolio',

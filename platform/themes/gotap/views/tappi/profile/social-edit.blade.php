@@ -1,5 +1,6 @@
 <div id="__next">
-    <form action="{{ route('public.member.profile.social.update', ['id' => $item->id]) }}" method="PUT">
+    <form action="{{ route('public.member.profile.social.update', ['id' => $item->id]) }}" method="POST">
+        {{ method_field('put') }}
         @csrf
         <div class="flex-wrap max-w-3xl m-auto">
             <div class="topbar-action-wrapper border-b bg-white z-50">

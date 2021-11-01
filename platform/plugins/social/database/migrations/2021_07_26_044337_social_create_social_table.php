@@ -17,7 +17,6 @@ class SocialCreateSocialTable extends Migration
             $table->string('name', 255);
             $table->string('type', 255);
             $table->string('hint', 255);
-            $table->string('icon', 255);
             $table->boolean('is_bank')->default(false);
             $table->string('status', 60)->default('published');
             $table->timestamps();

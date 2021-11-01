@@ -18,6 +18,7 @@ class AccountCreateAccountTable extends Migration
             $table->string('username', 255)->unique()->nullable();
             $table->string('description', 255)->nullable();
             $table->string('avatar', 255)->default('avatars/default-avatar.png')->nullable();
+            $table->string('cover', 255)->default('covers/default-cover.png')->nullable();
             $table->string('address', 255)->nullable();
             $table->string('uuid', 50)->unique();
             $table->string('code', 10)->nullable();
@@ -25,6 +26,7 @@ class AccountCreateAccountTable extends Migration
             $table->integer('tap')->default(0)->nullable();
             $table->integer('click')->default(0)->nullable();
             $table->foreignId('member_id')->nullable()->constrained('members');
+            $table->foreignId('theme_id')->default(1)->constrained('social_themes');
             $table->string('status', 60)->default('pending');
             $table->timestamps();
         });
@@ -33,7 +35,7 @@ class AccountCreateAccountTable extends Migration
            $table->string('name');
            $table->string('description')->nullable();
            $table->string('social_value')->nullable();
-            $table->string('social_app')->nullable();
+           $table->string('social_app')->nullable();
            $table->integer('order')->default(0)->nullable();
            $table->foreignId('account_id')->constrained('accounts');
            $table->foreignId('social_id')->constrained('socials');

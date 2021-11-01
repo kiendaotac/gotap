@@ -1,0 +1,9 @@
+{
+    "name": "Icon",
+    "namespace": "Botble\\Icon\\",
+    "provider": "Botble\\Icon\\Providers\\IconServiceProvider",
+    "author": "N/A",
+    "url": "N/A",
+    "version": "1.0",
+    "description": "The description for module icon"
+}

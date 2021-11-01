@@ -8,7 +8,10 @@ use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Media\Services\ThumbnailService;
 use Botble\Member\Http\Resources\ActivityLogResource;
 use Botble\Social\Models\Social;
+use Botble\SocialTheme\Models\SocialTheme;
+use Botble\Theme\Facades\Response;
 use File;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Media\Repositories\Interfaces\MediaFileInterface;
@@ -45,6 +48,8 @@ const TELEGRAM    = 'telegram';
 const WHATSAPP    = 'whatsapp';
 const SKYPE       = 'skype';
 const MOMO        = 'momo';
+const GAPO        = 'gapo';
+const LOTUS       = 'lotus';
 class PublicController extends Controller
 {
     /**
@@ -83,30 +88,37 @@ class PublicController extends Controller
     }
 
     /**
-     * @return \Botble\Theme\Facades\Response|\Illuminate\Http\JsonResponse|\Illuminate\View\View|\Response
+     * @return Response|\Response
      */
     public function getDashboard()
     {
         $user = Auth::guard('member')->user()->load(['account' => function($q) {
             $q->with(['items' => function($q) {
-                $q->with('social');
+                $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
+                $q->with(['social' => function($query) use($theme_id) {
+                    $query->with(['icons' => function($query) use($theme_id) {
+                        $query->where('theme_id', $theme_id);
+                    }]);
+                }]);
             }]);
         }]);
 
-        $theme = Theme::uses()->layout('tappi-profile');
+        $theme = Theme::uses()->layout('gotap');
 
-        SeoHelper::setTitle($user->account->fullname . ' - ' .__('Profile') . ' - ' . theme_option('site_title'));
+        $title = $user->account ? $user->account->fullname . ' - ' .__('Profile') . ' - ' . theme_option('site_title') : __('Profile') . ' - ' . theme_option('site_title');
 
-        return $theme->scope('tappi.profile', compact('user'))->render();
+        SeoHelper::setTitle($title);
+        Theme::asset()->serve('custom-css-user');
+        return $theme->scope('gotap.profile.index', compact('user'))->render();
     }
 
     public function editProfile()
     {
         $user = Auth::guard('member')->user()->load('account');
 
-        $theme = Theme::uses()->layout('tappi-profile-edit');
-
-        return $theme->scope('tappi.profile.edit', compact('user'))->render();
+        $theme = Theme::uses()->layout('gotap');
+        Theme::asset()->serve('crop-image');
+        return $theme->scope('gotap.profile.edit', compact('user'))->render();
     }
 
     public function updateProfile(Request $request)
@@ -114,36 +126,53 @@ class PublicController extends Controller
         $user = Auth::guard('member')->user()->load('account');
         $request->validate([
             'avatar'        =>  'required|string',
+            'cover'        =>  'required|string',
             'fullname'      =>  'required|string',
             'username'      =>  'required|string|' . Rule::unique('accounts', 'username')->ignore($user->account->id),
             'description'   =>  'required|string',
             'address'       =>  'required|string',
         ]);
-        $user->account()->update($request->only(['avatar', 'fullname', 'username', 'description', 'address']));
+        $user->account()->update($request->only(['avatar','cover', 'fullname', 'username', 'description', 'address']));
 
         return redirect()->route('public.member.profile.index');
     }
 
     public function indexProfileSocial()
     {
-        $user = Auth::guard('member')->user()->load(['account' => function($q) {
-            $q->with(['items' => function($q) {
-                $q->with('social');
+        $user = Auth::guard('member')
+            ->user()
+            ->load(['account' => function($q) {
+                $q->with(['items' => function($q) {
+                    $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
+                    $q->with(['social' => function($query) use($theme_id) {
+                        $query->with(['icons' => function($query) use($theme_id) {
+                            $query->where('theme_id', $theme_id);
+                        }]);
+                    }]);
+                }]);
             }]);
-        }]);
 
-        $theme = Theme::uses()->layout('tappi-master');
+        $theme = Theme::uses()->layout('gotap');
 
-        return $theme->scope('tappi.profile.social', compact('user'))->render();
+        return $theme->scope('gotap.social.index', compact('user'))->render();
     }
 
     public function addProfileSocial()
     {
-        $theme = Theme::uses()->layout('tappi-add');
+        $theme = Theme::uses()->layout('gotap');
 
-        $socials = Social::where('status', BaseStatusEnum::PUBLISHED)->get();
+        $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
 
-        return $theme->scope('tappi.profile.social-add', compact('socials'))->render();
+        $socials = Social::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->with(['icons' => function($query) use($theme_id) {
+                $query->where('theme_id', $theme_id);
+            }])->get();
+
+        Theme::asset()->serve('select2-tailwind');
+        Theme::asset()->serve('social-add-js');
+
+        return $theme->scope('gotap.social.create', compact('socials'))->render();
     }
 
     public function storeProfileSocial(Request $request)
@@ -171,13 +200,29 @@ class PublicController extends Controller
 
     public function editProfileSocial($id)
     {
-        $theme = Theme::uses()->layout('tappi-add');
+        $theme = Theme::uses()->layout('gotap');
 
-        $socials = Social::where('status', BaseStatusEnum::PUBLISHED)->get();
+        $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
 
-        $item = SocialItem::findOrFail($id);
+        $socials = Social::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->with(['icons' => function($query) use($theme_id) {
+                $query->where('theme_id', $theme_id);
+            }])->get();
 
-        return $theme->scope('tappi.profile.social-edit', compact('socials', 'item'))->render();
+        $item = SocialItem::query()
+            ->where('id', $id)
+            ->with(['social' => function($query) use($theme_id) {
+                $query->with(['icons' => function($query) use($theme_id) {
+                    $query->where('theme_id', $theme_id);
+                }]);
+            }])
+            ->firstOrFail();
+
+        Theme::asset()->serve('select2-tailwind');
+        Theme::asset()->serve('social-edit-js');
+
+        return $theme->scope('gotap.social.edit', compact('socials', 'item'))->render();
     }
 
     public function updateProfileSocial(Request $request, $id)
@@ -189,14 +234,18 @@ class PublicController extends Controller
         ]);
         $item = SocialItem::where('account_id', Auth::guard('member')->user()->load('account')->account->id)
             ->where('id', $id)->firstOrFail();
-        $item->name = $request->name;
-        $item->social_id = $request->social_id;
-        $item->social_value = $request->social_value;
-        $item->social_app = $request->social_value;
-        $item->description = $request->social_value;
-        $item->save();
 
-        return redirect()->route('public.member.profile.index');
+        $data = $request->only(['social_id', 'name', 'social_value']);
+
+        $social = Social::findOrFail($data['social_id']);
+
+        $data['social_app'] = $this->RegexSocial($data['social_value'], $social->type);
+
+        $data['description'] = $request->social_value;
+
+        $item->update($data);
+
+        return redirect()->route('public.member.profile.social');
     }
 
     public function updatePositionSocial(Request $request)
@@ -219,11 +268,71 @@ class PublicController extends Controller
             'avatar' => 'required|file|image'
         ]);
 
-        RvMedia::handleUpload($request->file('avatar'), 0, 'avatars');
+        $url = RvMedia::handleUpload($request->file('avatar'), 0, 'avatars');
 
-        return response()->json('done');
+        return response()->json($url);
     }
 
+    public function storeCover(Request $request)
+    {
+        $request->validate([
+            'cover' => 'required|file|image'
+        ]);
+
+        $url = RvMedia::handleUpload($request->file('cover'), 0, 'covers');
+
+        return response()->json($url);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function deleteSocialItem($id): RedirectResponse
+    {
+        SocialItem::where('id', $id)->where('account_id', Auth::guard('member')->user()->load('account')->account->id)->firstOrFail()->delete();
+
+        return redirect()->route('public.member.profile.social');
+    }
+
+    public function listLayout()
+    {
+        $theme = Theme::uses()->layout('gotap');
+
+        $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
+
+        $themes = SocialTheme::where('status', BaseStatusEnum::PUBLISHED)->get();
+
+        return $theme->scope('gotap.layout.index', compact('theme_id', 'themes'))->render();
+    }
+
+    public function updateLayout($id)
+    {
+        $theme = SocialTheme::where('status', BaseStatusEnum::PUBLISHED)->where('id', $id)->firstOrFail();
+
+        Auth::guard('member')->user()->account()->update(['theme_id' => $theme->id]);
+
+        return redirect()->back();
+    }
+
+    public function getGeneral()
+    {
+        $theme = Theme::uses()->layout('gotap');
+
+        $user = Auth::guard('member')->user()->load('account');
+
+        return $theme->scope('gotap.general.index', compact('user'))->render();
+    }
+
+    public function getQR($uuid)
+    {
+        $theme = Theme::uses()->layout('gotap');
+
+        Theme::asset()->serve('qr');
+
+        $url = route('public.member.tap.index', ['uuid' => $uuid]);
+
+        return $theme->scope('gotap.qr.index', compact('url', 'uuid'))->render();
+    }
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      *
@@ -241,7 +350,7 @@ class PublicController extends Controller
     /**
      * @param SettingRequest $request
      * @param BaseHttpResponse $response
-     * @return BaseHttpResponse|\Illuminate\Http\RedirectResponse
+     * @return BaseHttpResponse|RedirectResponse
      */
     public function postSettings(SettingRequest $request, BaseHttpResponse $response)
     {
@@ -393,7 +502,7 @@ class PublicController extends Controller
 
                 preg_match($instagramPattern, $url, $id);
 
-                return $id[1] ?? $url;
+                return $id[1] ?? null;
 
             case GITHUB:
 
@@ -401,7 +510,7 @@ class PublicController extends Controller
 
                 preg_match($githubPattern, $url, $id);
 
-                return $id[1] ?? $url;
+                return $id[1] ?? null;
 
             case YOUTUBE:
 
@@ -417,15 +526,17 @@ class PublicController extends Controller
 
                 preg_match($youtubePatternVideo, $url, $video);
 
-                return $channel[1] ?? $user[1] ?? $video[1] ?? $url;
+                return $channel[1] ?? $user[1] ?? $video[1] ?? null;
 
             case TIKTOK:
+
+                return $url;
                 // Pattern: (?:http|https)?\/\/(?:[A-z]+\.)?tiktok\.com\/@?(?!video|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?
-                $tiktokPattern = '/(?:http|https)?\/\/(?:[A-z]+\.)?tiktok\.com\/@?(?!video|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?';
-
-                preg_match($tiktokPattern, $url, $user);
-
-                return $user[1] ?? $url;
+//                $tiktokPattern = '/(?:http|https)?\/\/(?:[A-z]+\.)?tiktok\.com\/@?(?!video|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?';
+//
+//                preg_match($tiktokPattern, $url, $user);
+//
+//                return $user[1] ?? $url;
 
             case PINTEREST:
 
@@ -433,7 +544,7 @@ class PublicController extends Controller
 
                 preg_match($pinterestPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
             case LINKEDIN:
 
@@ -441,7 +552,7 @@ class PublicController extends Controller
 
                 preg_match($linkinPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
             case TWITTER:
 
@@ -449,7 +560,7 @@ class PublicController extends Controller
 
                 preg_match($twitterPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
             case SNAPCHAT:
 
@@ -457,7 +568,7 @@ class PublicController extends Controller
 
                 preg_match($snapchatPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
             case ZALO:
 
@@ -465,7 +576,22 @@ class PublicController extends Controller
 
                 preg_match($zaloPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
+            case GAPO:
+
+                $gapoPattern = '/(?:https?:)?\/\/(?:www\.)?gapo\.vn\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+
+                preg_match($gapoPattern, $url, $username);
+
+                return $username[1] ?? null;
+
+                case LOTUS:
+
+                $lotusPattern = '(?:https?:)?\/\/(?:www\.)?lotus\.vn\/w\/profile\/(?P<username>[A-z0-9\.\_\-]+)\/?\.htm';
+
+                preg_match($lotusPattern, $url, $username);
+
+                return $username[1] ?? null;
 
             case PHONE:
 
@@ -481,14 +607,14 @@ class PublicController extends Controller
 
                 preg_match($emailPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
             case SOUNDCLOUD:
                 $soundcloudPattern = '/(?:https?:)?\/\/(?:www\.)?soundcloud.com\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
 
                 preg_match($soundcloudPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
             case TELEGRAM:
 
@@ -496,7 +622,7 @@ class PublicController extends Controller
 
                 preg_match($telegramPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
             case WHATSAPP:
 
@@ -504,7 +630,7 @@ class PublicController extends Controller
 
                 preg_match($whatsappPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
             case SKYPE:
 
@@ -516,9 +642,9 @@ class PublicController extends Controller
 
                 preg_match($momoPattern, $url, $username);
 
-                return $username[1] ?? $url;
+                return $username[1] ?? null;
 
-            default: return $url;
+            default: return null;
         }
     }
 }

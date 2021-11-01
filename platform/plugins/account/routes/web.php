@@ -11,6 +11,17 @@ Route::group(['namespace' => 'Botble\Account\Http\Controllers', 'middleware' => 
                 'uses'       => 'AccountController@deletes',
                 'permission' => 'account.destroy',
             ]);
+            Route::get('download-qr/{uuid}', [
+                'as'            => 'download',
+                'uses'          => 'QRController@download',
+                'permission'    => 'account.index'
+            ]);
+
+            Route::get('download-many', [
+                'as'            => 'download-many',
+                'uses'          => 'QRController@downloadMany',
+                'permission'    => 'account.index'
+            ]);
         });
     });
 

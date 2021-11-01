@@ -1,4 +1,19 @@
 $(document).ready(function (){
+
+    $(document).on('click tap', '.bank-account .copy-button', function (e){
+        e.stopPropagation();
+    })
+
+    $(document).on('click tap', '.copy-button', function () {
+        $(this).addClass('copied');
+        let text = $(this).siblings('div').find('.bank-number').text();
+        let elem = document.createElement("textarea");
+        document.body.appendChild(elem);
+        elem.value = text;
+        elem.select();
+        document.execCommand("copy");
+        document.body.removeChild(elem);
+    })
     $(document).on('click tap', '.is_bank', function (){
         if ($(this).hasClass('flip')) {
             $(this).removeClass('flip')
@@ -19,7 +34,9 @@ $(document).ready(function (){
         const TWITTER = 'twitter'
         const SNAPCHAT = 'snapchat'
         const ZALO = 'zalo'
-        const TEL = 'tel'
+        const GAPO = 'gapo'
+        const LOTUS = 'lotus'
+        const PHONE = 'phone'
         const SMS = 'sms'
         const EMAIL = 'email'
         const SOUNDCLOUD = 'soundcloud'
@@ -113,7 +130,14 @@ $(document).ready(function (){
                 openMobileApp(null, url);
                 break;
 
-            case TEL:
+            case GAPO:
+                openMobileApp(null, url);
+                break;
+            case LOTUS:
+                openMobileApp(null, url);
+                break;
+
+            case PHONE:
                 scheme = `tel:${data.social_app}`;
                 openMobileApp(scheme, null);
                 break;
@@ -181,15 +205,12 @@ $(document).ready(function (){
     function openMobileApp(scheme, url) {
         if (scheme) {
             try {
-                window.location.replace(scheme);
+                window.location.href = scheme
             } catch (error) {
-                window.location.replace(url);
+                window.location.href = url
             }
-            // setTimeout(() => {
-            //    window.location.replace(url);
-            // }, 10000);
         } else {
-            window.location.replace(url);
+            window.location.href = url
         }
     }
 });

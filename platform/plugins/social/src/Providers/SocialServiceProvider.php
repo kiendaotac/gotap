@@ -34,9 +34,9 @@ class SocialServiceProvider extends ServiceProvider
             ->loadRoutes(['web']);
 
         Event::listen(RouteMatched::class, function () {
-            if (defined('LANGUAGE_MODULE_SCREEN_NAME')) {
+            /*if (defined('LANGUAGE_MODULE_SCREEN_NAME')) {
                 \Language::registerModule([Social::class]);
-            }
+            }*/
 
             dashboard_menu()
                 ->registerItem([

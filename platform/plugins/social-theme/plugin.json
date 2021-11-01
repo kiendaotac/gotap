@@ -1,0 +1,9 @@
+{
+    "name": "SocialTheme",
+    "namespace": "Botble\\SocialTheme\\",
+    "provider": "Botble\\SocialTheme\\Providers\\SocialThemeServiceProvider",
+    "author": "N/A",
+    "url": "N/A",
+    "version": "1.0",
+    "description": "The description for module social_theme"
+}
