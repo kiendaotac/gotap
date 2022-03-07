@@ -20,9 +20,9 @@
             <div class="flex flex-wrap justify-center">
                 <div class="w-full px-4 mt-24 flex justify-center">
                     <div class="relative">
-                        <input type="file" name="image" class="image hidden">
+                        <input type="file" name="image" class="image hidden" accept="image/*">
                         <div class="flex jss232 edit-profile-avatar profile-img shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 lg:-ml-16 max-w-150-px">
-                            <input name="avatar" value="{{ $user->account->avatar ?: theme_option('default-avatar') }}" type="text" id="file" accept="image/*" autocomplete="off" tabindex="-1" style="display: none;">
+                            <input name="avatar" value="{{ $user->account->avatar ?: theme_option('default-avatar') }}" type="text" id="file" autocomplete="off" tabindex="-1" style="display: none;">
                             <img alt="avatar" class="css-1o50j9g" src="{{ $user->account->avatar ? RvMedia::getImageUrl($user->account->avatar) : RvMedia::getImageUrl(theme_option('default-avatar')) }}">
                             <div class="jss234 jss235 cc_pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" focusable="false" class="css-30i8ss" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" style="transform: rotate(360deg);">
@@ -40,38 +40,16 @@
             <!-- This example requires Tailwind CSS v2.0+ -->
             <div class="fixed z-10 inset-0 overflow-y-auto modal hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
                 <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                    <!--
-                      Background overlay, show/hide based on modal state.
-
-                      Entering: "ease-out duration-300"
-                        From: "opacity-0"
-                        To: "opacity-100"
-                      Leaving: "ease-in duration-200"
-                        From: "opacity-100"
-                        To: "opacity-0"
-                    -->
                     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-
                     <!-- This element is to trick the browser into centering the modal contents. -->
                     <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-                    <!--
-                      Modal panel, show/hide based on modal state.
-
-                      Entering: "ease-out duration-300"
-                        From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                        To: "opacity-100 translate-y-0 sm:scale-100"
-                      Leaving: "ease-in duration-200"
-                        From: "opacity-100 translate-y-0 sm:scale-100"
-                        To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    -->
                     <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                         <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <div class="sm:flex sm:items-start">
                                 <div class="img-container">
                                     <div class="row">
                                         <div class="col-md-8">
-                                            <img id="image" src="{{ RvMedia::getImageUrl(theme_option('default-avatar')) }}">
+                                            <img id="image" src="{{ RvMedia::getImageUrl(theme_option('default-avatar')) }}" alt="Default avatar">
                                         </div>
                                         <div class="col-md-4">
                                             <div class="preview"></div>

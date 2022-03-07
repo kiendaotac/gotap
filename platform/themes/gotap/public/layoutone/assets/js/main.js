@@ -1,22 +1,5 @@
 $(document).ready(function (){
 
-    $(document).on('click tap', '.bank-account .copy-button', function (e){
-        e.stopPropagation();
-    })
-
-    // $(document).on('click tap', '.bank-account', function (){
-    //     let card = $(this).find('.flip-card');
-    //     if ($(card).hasClass('flip')) {
-    //         $(card).removeClass('flip')
-    //     } else  {
-    //         $(card).addClass('flip')
-    //     }
-    // })
-
-    $(document).on('click tap', '.copy-button', function () {
-        alert('copied')
-    })
-
     let sortable = $( ".sortable" );
     sortable.sortable();
     sortable.disableSelection();
@@ -46,8 +29,6 @@ $(document).ready(function (){
         if(!optimage){
             return opt.text;
         } else {
-            let baseUrlImage = $('select[name=social_id]').data("url");
-            optimage = baseUrlImage + optimage
             let $opt = $(
                 `<div class="flex flex-row">
                     <img class="ml-2" src="${optimage}" width="24px" height="24px"/> 

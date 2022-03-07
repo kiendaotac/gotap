@@ -22,12 +22,12 @@ class Product extends BaseModel
      */
     protected $fillable = [
         'name',
-        'name_color',
+//        'name_color',
         'description',
-        'description_color',
-        'color',
-        'price',
-        'price_color',
+//        'description_color',
+//        'color',
+//        'price',
+//        'price_color',
         'image',
         'status',
     ];

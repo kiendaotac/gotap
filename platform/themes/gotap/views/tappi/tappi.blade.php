@@ -45,8 +45,8 @@
         <div class="w-full lg:w-9/12">
             @foreach($account->items as $item)
                 @if($item->social->is_bank)
+                    <div class="is_bank flip-card mb-6">
                         <a class="bank-account">
-                    <div class="flip-card mb-6">
                             <div class="flip-card-inner">
                                 <div class="flip-card-front relative flex flex-col min-w-0 break-words bg-white mb-6 social-card rounded-lg">
                                     <div class="flex px-4 py-1 flex-auto items-center">
@@ -89,11 +89,11 @@
                                     </div>
                                 </div>
                             </div>
-                    </div>
                         </a>
+                    </div>
                 @else
-                        <a href="{{ $item->social_value }}">
-                    <div class="relative flex flex-col min-w-0 break-words bg-white mb-6 social-card rounded-lg">
+                    <div data-social='{{ $item }}' class="is_social relative flex flex-col min-w-0 break-words bg-white mb-6 social-card rounded-lg">
+                        <a>
                             <div class="flex px-4 py-1 flex-auto items-center">
                                 <div class="relative w-auto flex-initial h-12 my-1">
                                     <div class="text-white text-center inline-flex items-center justify-center w-12 h-12">
@@ -101,11 +101,11 @@
                                     </div>
                                 </div>
                                 <div class="relative w-full pl-1 m-auto max-w-full flex-grow flex-1">
-                                    <h5 class="text-gray-700 m-auto font-bold text-base">{{ $item->name ? $item->name : $item->social->name }}</h5>
+                                    <h5 class="text-gray-700 m-auto font-bold text-base">{{ $item->name ? : $item->social->name }}</h5>
                                 </div>
                             </div>
-                    </div>
                         </a>
+                    </div>
                 @endif
             @endforeach
         </div>

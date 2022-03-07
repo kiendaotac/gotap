@@ -15,13 +15,13 @@ class ProductCreateProductTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->string('name_color',15);
+            $table->string('name_color',15)->nullable();
             $table->text('description');
-            $table->text('description_color');
-            $table->integer('price');
-            $table->string('price_color',15);
-            $table->string('color',15);
-            $table->string('image', 255);
+            $table->text('description_color')->nullable();
+            $table->integer('price')->nullable();
+            $table->string('price_color',15)->nullable();
+            $table->string('color',15)->nullable();
+            $table->string('image', 255)->nullable();
             $table->string('status', 60)->default('published');
             $table->timestamps();
         });

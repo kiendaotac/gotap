@@ -112,16 +112,17 @@
         owlWatch.on('translated.owl.carousel changed.owl.carousel', function (event) {
             let product = owlWatch.find('.active img').data('product')
             if (product) {
-                owlWatchbg.css({ 'background-color': product.color })
-
-                productName.text(product.name)
-                productName.attr('style', 'letter-spacing:10px; font-size: 18px; color: ' + product.name_color + ' !important');
-
-                productDescription.text(product.description)
-                productDescription.css({ 'color': product.description_color })
-
-                productPrice.text(new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price))
-                productPrice.css({ 'color': product.price_color })
+                $('#header-content').html(product.description)
+                // owlWatchbg.css({ 'background-color': product.color })
+                //
+                // productName.text(product.name)
+                // productName.attr('style', 'letter-spacing:10px; font-size: 18px; color: ' + product.name_color + ' !important');
+                //
+                // productDescription.text(product.description)
+                // productDescription.css({ 'color': product.description_color })
+                //
+                // productPrice.text(new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price))
+                // productPrice.css({ 'color': product.price_color })
             }
             /*var bgcolor = owlWatch.find('.active img').attr('data-bg');
             owlWatchbg.css({ 'background-color': bgcolor });*/
@@ -129,6 +130,36 @@
     });
 
 
+</script>
+<!-- Messenger Plugin chat Code -->
+<div id="fb-root"></div>
+
+<!-- Your Plugin chat code -->
+<div id="fb-customer-chat" class="fb-customerchat">
+</div>
+
+<script>
+    var chatbox = document.getElementById('fb-customer-chat');
+    chatbox.setAttribute("page_id", "109925907515401");
+    chatbox.setAttribute("attribution", "biz_inbox");
+</script>
+
+<!-- Your SDK code -->
+<script>
+    window.fbAsyncInit = function() {
+        FB.init({
+            xfbml            : true,
+            version          : 'v13.0'
+        });
+    };
+
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/vi_VN/sdk/xfbml.customerchat.js';
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 </script>
 </body>
 </html>

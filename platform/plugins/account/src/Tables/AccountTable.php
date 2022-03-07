@@ -62,6 +62,12 @@ class AccountTable extends TableAbstract
             ->editColumn('avatar', function ($item) {
                 return $item->avatar ? '<img src="' . \RvMedia::getImageUrl($item->avatar) . '" alt="' . $item->fullname . '" style="width: 50px">' :  '<img src="' . \RvMedia::getImageUrl('/avatars/default-avatar.png') . '" alt="' . $item->fullname . '" style="width: 50px">';;
             })
+            ->addColumn('link', function ($item) {
+                return Html::link(route('public.member.qr.index', $item->uuid), 'QR Code', ['target' => '_blank']);
+            })
+            ->addColumn('download', function ($item) {
+                return Html::link(route('account.download', $item->uuid), 'Download', ['target' => '_blank']);
+            })
             ->editColumn('created_at', function ($item) {
                 return BaseHelper::formatDate($item->created_at);
             })
@@ -141,6 +147,18 @@ class AccountTable extends TableAbstract
                 'width' => '100px',
                 'class' => 'text-center'
             ],
+            'link' => [
+                'name'  => 'accounts.id',
+                'title' => __('Link'),
+                'width' => '100px',
+                'class' => 'text-center'
+            ],
+            'download' => [
+                'name'  => 'accounts.id',
+                'title' => __('Download'),
+                'width' => '100px',
+                'class' => 'text-center'
+            ],
             'status' => [
                 'name'  => 'accounts.status',
                 'title' => trans('core/base::tables.status'),
@@ -164,7 +182,18 @@ class AccountTable extends TableAbstract
      */
     public function bulkActions(): array
     {
-        return $this->addDeleteAction(route('account.deletes'), 'account.destroy', parent::bulkActions());
+        $action = $this->addDeleteAction(route('account.deletes'), 'account.destroy', parent::bulkActions());
+        $action['download-many'] = $this->addDownloadAction(route('account.download-many'));
+
+        return $action;
+    }
+
+    protected function addDownloadAction(string $url)
+    {
+        return view('plugins/account::partials.download', [
+                'href'       => $url,
+                'data_class' => '',
+            ]);
     }
 
     /**

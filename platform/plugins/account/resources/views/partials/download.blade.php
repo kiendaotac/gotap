@@ -1,0 +1,1 @@
+{!! Html::link($href, __('Download Selected'), ['class' => '', 'data-class-item' => $data_class]) !!}

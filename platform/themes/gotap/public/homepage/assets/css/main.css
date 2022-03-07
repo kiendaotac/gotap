@@ -1,0 +1,132 @@
+.product-image{
+  position: relative;
+}
+.product-image .image-second {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.5s;
+}
+.product-image:hover .image-first{
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.5s;
+}
+.product-image:hover .image-second{
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Nhưng câu hỏi thường gặp */
+
+.accordionItem{
+  display:block;
+  width:100%;
+  box-sizing: border-box;
+  font-family:'Open-sans',Arial,sans-serif;
+}
+.accordionItemHeading{
+  cursor:pointer;
+  margin:0px 0px 10px 0px;
+  padding:10px;
+  font-size: 22px;
+  font-weight: 400;
+  background:#2980b9;
+  color:#fff;
+  width:100%;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+.accordionItemHeading span{
+  float: right;
+  font-size: 25px;
+}
+.close .accordionItemContent{
+  height:0px;
+  transition:height 1s ease-out;
+  transform: scaleY(0);
+  float:left;
+  display:block;
+}
+.open .accordionItemContent{
+  padding: 20px;
+  background-color: #f0f1f1;
+  border: 1px solid #ddd;
+  border-top-color: #8a2be2;
+  width: 100%;
+  margin: 0px 0px 10px 0px;
+  display:block;
+  transform: scaleY(1);
+  transform-origin: top;
+  transition: transform 0.4s ease;
+  box-sizing: border-box;
+}
+
+.open .accordionItemHeading{
+  margin:0px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  background-color: #073e63;
+  color: #cdd7d8;
+}
+
+.accordionItemHeading i{
+  font-size: 16px;
+  color: #000000;
+}
+.accordionItem.open .accordionItemHeading i:before {
+  content: "\f106";
+}
+.accordionItemHeading{
+  background-color: #ffffff !important;
+  color: #3498db !important;
+  font-size: 24px !important;
+  padding: 15px !important;
+  font-weight: 600!important;
+  margin: 0 !important;
+  position: relative;
+  font-family: Arial,Helvetica,sans-serif !important;
+}
+.accordionwrap{
+  -webkit-box-shadow: 0px 10px 24px -2px rgb(0 0 0 / 27%);
+  -moz-box-shadow: 0px 10px 24px -2px rgba(0, 0, 0, 0.27);
+  box-shadow: 0px 10px 24px -2px rgb(0 0 0 / 27%);
+  margin: 0 auto;
+  text-align: left;
+}
+.accordionItemHeading span{
+  float: none !important;
+  font-size: 16px !important;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.accordionItem.open {
+  border-left: 2px solid blueviolet;
+}
+.accordionItem.open .accordionItemHeading{
+  background-color: #f0f1f1 !important;
+}
+.block-title{
+  text-transform: uppercase;
+  font-size: 22px;
+  padding: 5px 0;
+  font-weight: 600;
+  position: relative;
+  margin: 20px 0;
+  text-align: center;
+}
+.block-title::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  border-bottom: 1px solid #dcdcdc;
+}
+/* Accordion */

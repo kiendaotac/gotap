@@ -59,9 +59,6 @@ class SocialTable extends TableAbstract
             ->editColumn('checkbox', function ($item) {
                 return $this->getCheckbox($item->id);
             })
-            ->editColumn('icon', function ($item) {
-                return '<img src="' . \RvMedia::getImageUrl($item->icon) . '" alt="' . $item->name . '" style="width: 50px">';
-            })
             ->editColumn('created_at', function ($item) {
                 return BaseHelper::formatDate($item->created_at);
             })
@@ -88,8 +85,9 @@ class SocialTable extends TableAbstract
         $model = $this->repository->getModel();
         $select = [
             'socials.id',
-            'socials.icon',
             'socials.name',
+            'socials.type',
+            'socials.hint',
             'socials.is_bank',
             'socials.created_at',
             'socials.status',
@@ -111,14 +109,19 @@ class SocialTable extends TableAbstract
                 'title' => trans('core/base::tables.id'),
                 'width' => '20px',
             ],
-            'icon' => [
-                'name'  => 'socials.icon',
-                'title' => __('icon'),
-                'class' => 'text-center'
-            ],
             'name' => [
                 'name'  => 'socials.name',
                 'title' => trans('core/base::tables.name'),
+                'class' => 'text-left',
+            ],
+            'type' => [
+                'name'  => 'socials.type',
+                'title' => __('Type'),
+                'class' => 'text-left',
+            ],
+            'hint' => [
+                'name'  => 'socials.hint',
+                'title' => __('Hint'),
                 'class' => 'text-left',
             ],
             'is_bank' => [

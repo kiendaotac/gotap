@@ -6,8 +6,11 @@ use Botble\Base\Traits\EnumCastable;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Base\Models\BaseModel;
 use Botble\Member\Models\Member;
+use Botble\Theme\Models\AccountTheme;
+use Botble\Theme\Models\Theme;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Account extends BaseModel
 {
@@ -28,11 +31,13 @@ class Account extends BaseModel
         'username',
         'description',
         'avatar',
+        'cover',
         'address',
         'uuid',
         'code',
         'status',
         'member_id',
+        'theme_id'
     ];
 
     /**
@@ -50,5 +55,10 @@ class Account extends BaseModel
     public function member(): BelongsTo
     {
         return $this->belongsTo(Member::class, 'member_id', 'id');
+    }
+
+    public function theme(): HasOneThrough
+    {
+        return $this->hasOneThrough(Theme::class, AccountTheme::class, 'account_id', 'theme_id', 'id');
     }
 }

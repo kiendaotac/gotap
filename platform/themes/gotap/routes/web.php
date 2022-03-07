@@ -6,15 +6,39 @@
 
 Route::group(['namespace' => 'Theme\Gotap\Http\Controllers', 'middleware' => ['web', 'core']], function () {
     Route::group(apply_filters(BASE_FILTER_GROUP_PUBLIC_ROUTE, []), function () {
-        Route::get('tap/{uuid}', 'TapController@show');
+
 
         // Add your custom route here
         // Ex: Route::get('hello', 'GotapController@getHello');
         Route::group(['as' => 'public.member.'], function (){
+            Route::get('tap/{uuid}', [
+                'as'    => 'tap.index',
+                'uses'  => 'TapController@show'
+            ]);
+            Route::get('qr/{uuid}', [
+                'as'    => 'qr.index',
+                'uses'  => 'PublicController@getQR'
+            ]);
             Route::get('user/{username}', [
                 'as'   => 'user.index',
                 'uses' => 'TapController@index',
             ]);
+
+            Route::post('add-to-cart', [
+                'as'    => 'add-to-cart',
+                'uses'  => 'GotapController@addToCart'
+            ]);
+        });
+
+        Route::group([], function (){
+            Route::get('/product/{id}', 'GotapController@getDetails')
+                ->name('public.product.details');
+
+            Route::get('/checkout', 'GotapController@getCheckout')
+                ->name('public.checkout');
+
+            Route::post('/checkout', 'GotapController@postCheckout')
+                ->name('public.checkout.post');
         });
 
         Route::group(['middleware' => ['member.guest'], 'as' => 'public.member.'], function () {
@@ -24,9 +48,9 @@ Route::group(['namespace' => 'Theme\Gotap\Http\Controllers', 'middleware' => ['w
             Route::get('password/request', 'ForgotPasswordController@showLinkRequestForm')->name('password.request');
             Route::post('password/email', 'ForgotPasswordController@sendResetLinkEmail')->name('password.email');
             Route::post('register', 'RegisterController@register')->name('register.post');
-            /*Route::get('password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
+            Route::get('password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset');
             Route::post('password/reset', 'ResetPasswordController@reset')->name('password.update');
-            Route::get('verify', 'RegisterController@getVerify')->name('verify');
+            /*Route::get('verify', 'RegisterController@getVerify')->name('verify');
             */
         });
 
@@ -76,7 +100,39 @@ Route::group(['namespace' => 'Theme\Gotap\Http\Controllers', 'middleware' => ['w
                     'as'   => 'profile.avatar.store',
                     'uses' => 'PublicController@storeAvatar',
                 ]);
+                Route::post('profile/cover', [
+                    'as'   => 'profile.cover.store',
+                    'uses' => 'PublicController@storeCover',
+                ]);
 
+                Route::delete('profile/social/delete/{id}', [
+                    'as'    =>  'profile.social.delete',
+                    'uses'  =>  'PublicController@deleteSocialItem'
+                ]);
+
+                Route::get('profile/layout', [
+                    'as'   => 'profile.layout.index',
+                    'uses' => 'PublicController@listLayout',
+                ]);
+
+                Route::put('profile/layout/{id}', [
+                    'as'   => 'profile.layout.update',
+                    'uses' => 'PublicController@updateLayout',
+                ]);
+                Route::get('profile/general', [
+                    'as'   => 'profile.general.index',
+                    'uses' => 'PublicController@getGeneral',
+                ]);
+
+                Route::get('profile/change-password', [
+                    'as'   => 'profile.changepassword.index',
+                    'uses' => 'ResetPasswordController@showChangePasswordForm',
+                ]);
+
+                Route::post('profile/change-password', [
+                    'as'   => 'profile.changepassword.store',
+                    'uses' => 'ResetPasswordController@storePassword',
+                ]);
                 /*Route::get('settings', [
                     'as'   => 'settings',
                     'uses' => 'PublicController@getSettings',

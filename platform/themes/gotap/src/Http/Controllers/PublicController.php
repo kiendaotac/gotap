@@ -8,7 +8,10 @@ use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Media\Services\ThumbnailService;
 use Botble\Member\Http\Resources\ActivityLogResource;
 use Botble\Social\Models\Social;
+use Botble\SocialTheme\Models\SocialTheme;
+use Botble\Theme\Facades\Response;
 use File;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Botble\Base\Http\Responses\BaseHttpResponse;
 use Botble\Media\Repositories\Interfaces\MediaFileInterface;
@@ -45,6 +48,8 @@ const TELEGRAM    = 'telegram';
 const WHATSAPP    = 'whatsapp';
 const SKYPE       = 'skype';
 const MOMO        = 'momo';
+const GAPO        = 'gapo';
+const LOTUS       = 'lotus';
 class PublicController extends Controller
 {
     /**
@@ -83,30 +88,37 @@ class PublicController extends Controller
     }
 
     /**
-     * @return \Botble\Theme\Facades\Response|\Illuminate\Http\JsonResponse|\Illuminate\View\View|\Response
+     * @return Response|\Response
      */
     public function getDashboard()
     {
         $user = Auth::guard('member')->user()->load(['account' => function($q) {
             $q->with(['items' => function($q) {
-                $q->with('social');
+                $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
+                $q->with(['social' => function($query) use($theme_id) {
+                    $query->with(['icons' => function($query) use($theme_id) {
+                        $query->where('theme_id', $theme_id);
+                    }]);
+                }]);
             }]);
         }]);
 
-        $theme = Theme::uses()->layout('tappi-profile');
+        $theme = Theme::uses()->layout('gotap');
 
-        SeoHelper::setTitle($user->account->fullname . ' - ' .__('Profile') . ' - ' . theme_option('site_title'));
+        $title = $user->account ? $user->account->fullname . ' - ' .__('Profile') . ' - ' . theme_option('site_title') : __('Profile') . ' - ' . theme_option('site_title');
 
-        return $theme->scope('tappi.profile', compact('user'))->render();
+        SeoHelper::setTitle($title);
+        Theme::asset()->serve('custom-css-user');
+        return $theme->scope('gotap.profile.index', compact('user'))->render();
     }
 
     public function editProfile()
     {
         $user = Auth::guard('member')->user()->load('account');
 
-        $theme = Theme::uses()->layout('tappi-profile-edit');
-
-        return $theme->scope('tappi.profile.edit', compact('user'))->render();
+        $theme = Theme::uses()->layout('gotap');
+        Theme::asset()->serve('crop-image');
+        return $theme->scope('gotap.profile.edit', compact('user'))->render();
     }
 
     public function updateProfile(Request $request)
@@ -114,36 +126,57 @@ class PublicController extends Controller
         $user = Auth::guard('member')->user()->load('account');
         $request->validate([
             'avatar'        =>  'required|string',
+            'cover'        =>  'required|string',
             'fullname'      =>  'required|string',
             'username'      =>  'required|string|' . Rule::unique('accounts', 'username')->ignore($user->account->id),
             'description'   =>  'required|string',
             'address'       =>  'required|string',
         ]);
-        $user->account()->update($request->only(['avatar', 'fullname', 'username', 'description', 'address']));
+        $user->account()->update($request->only(['avatar','cover', 'fullname', 'username', 'description', 'address']));
 
         return redirect()->route('public.member.profile.index');
     }
 
     public function indexProfileSocial()
     {
-        $user = Auth::guard('member')->user()->load(['account' => function($q) {
-            $q->with(['items' => function($q) {
-                $q->with('social');
+        $user = Auth::guard('member')
+            ->user()
+            ->load(['account' => function($q) {
+                $q->with(['items' => function($q) {
+                    $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
+                    $q->with(['social' => function($query) use($theme_id) {
+                        $query->with(['icons' => function($query) use($theme_id) {
+                            $query->where('theme_id', $theme_id);
+                        }]);
+                    }]);
+                }]);
             }]);
-        }]);
 
-        $theme = Theme::uses()->layout('tappi-master');
+        $theme = Theme::uses()->layout('gotap');
 
-        return $theme->scope('tappi.profile.social', compact('user'))->render();
+        return $theme->scope('gotap.social.index', compact('user'))->render();
     }
 
     public function addProfileSocial()
     {
-        $theme = Theme::uses()->layout('tappi-add');
+        $theme = Theme::uses()->layout('gotap');
 
-        $socials = Social::where('status', BaseStatusEnum::PUBLISHED)->get();
+        $user = Auth::guard('member')->user()->load('account');
 
-        return $theme->scope('tappi.profile.social-add', compact('socials'))->render();
+        $account = $user->account;
+
+        $theme_id = $account->theme_id;
+
+        $socials = Social::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->with(['icons' => function($query) use($theme_id) {
+                $query->where('theme_id', $theme_id);
+            }])->get();
+
+        Theme::asset()->serve('select2-tailwind');
+        Theme::asset()->serve('social-add-js');
+
+        return $theme->scope('gotap.social.create', compact('socials'))->render();
     }
 
     public function storeProfileSocial(Request $request)
@@ -171,13 +204,29 @@ class PublicController extends Controller
 
     public function editProfileSocial($id)
     {
-        $theme = Theme::uses()->layout('tappi-add');
+        $theme = Theme::uses()->layout('gotap');
 
-        $socials = Social::where('status', BaseStatusEnum::PUBLISHED)->get();
+        $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
 
-        $item = SocialItem::findOrFail($id);
+        $socials = Social::query()
+            ->where('status', BaseStatusEnum::PUBLISHED)
+            ->with(['icons' => function($query) use($theme_id) {
+                $query->where('theme_id', $theme_id);
+            }])->get();
 
-        return $theme->scope('tappi.profile.social-edit', compact('socials', 'item'))->render();
+        $item = SocialItem::query()
+            ->where('id', $id)
+            ->with(['social' => function($query) use($theme_id) {
+                $query->with(['icons' => function($query) use($theme_id) {
+                    $query->where('theme_id', $theme_id);
+                }]);
+            }])
+            ->firstOrFail();
+
+        Theme::asset()->serve('select2-tailwind');
+        Theme::asset()->serve('social-edit-js');
+
+        return $theme->scope('gotap.social.edit', compact('socials', 'item'))->render();
     }
 
     public function updateProfileSocial(Request $request, $id)
@@ -189,14 +238,18 @@ class PublicController extends Controller
         ]);
         $item = SocialItem::where('account_id', Auth::guard('member')->user()->load('account')->account->id)
             ->where('id', $id)->firstOrFail();
-        $item->name = $request->name;
-        $item->social_id = $request->social_id;
-        $item->social_value = $request->social_value;
-        $item->social_app = $request->social_value;
-        $item->description = $request->social_value;
-        $item->save();
 
-        return redirect()->route('public.member.profile.index');
+        $data = $request->only(['social_id', 'name', 'social_value']);
+
+        $social = Social::findOrFail($data['social_id']);
+
+        $data['social_app'] = $this->RegexSocial($data['social_value'], $social->type);
+
+        $data['description'] = $request->social_value;
+
+        $item->update($data);
+
+        return redirect()->route('public.member.profile.social');
     }
 
     public function updatePositionSocial(Request $request)
@@ -219,11 +272,71 @@ class PublicController extends Controller
             'avatar' => 'required|file|image'
         ]);
 
-        RvMedia::handleUpload($request->file('avatar'), 0, 'avatars');
+        $url = RvMedia::handleUpload($request->file('avatar'), 0, 'avatars');
 
-        return response()->json('done');
+        return response()->json($url);
     }
 
+    public function storeCover(Request $request)
+    {
+        $request->validate([
+            'cover' => 'required|file|image'
+        ]);
+
+        $url = RvMedia::handleUpload($request->file('cover'), 0, 'covers');
+
+        return response()->json($url);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function deleteSocialItem($id): RedirectResponse
+    {
+        SocialItem::where('id', $id)->where('account_id', Auth::guard('member')->user()->load('account')->account->id)->firstOrFail()->delete();
+
+        return redirect()->route('public.member.profile.social');
+    }
+
+    public function listLayout()
+    {
+        $theme = Theme::uses()->layout('gotap');
+
+        $theme_id = Auth::guard('member')->user()->load('account')->account->theme_id;
+
+        $themes = SocialTheme::where('status', BaseStatusEnum::PUBLISHED)->get();
+
+        return $theme->scope('gotap.layout.index', compact('theme_id', 'themes'))->render();
+    }
+
+    public function updateLayout($id)
+    {
+        $theme = SocialTheme::where('status', BaseStatusEnum::PUBLISHED)->where('id', $id)->firstOrFail();
+
+        Auth::guard('member')->user()->account()->update(['theme_id' => $theme->id]);
+
+        return redirect()->back();
+    }
+
+    public function getGeneral()
+    {
+        $theme = Theme::uses()->layout('gotap');
+
+        $user = Auth::guard('member')->user()->load('account');
+
+        return $theme->scope('gotap.general.index', compact('user'))->render();
+    }
+
+    public function getQR($uuid)
+    {
+        $theme = Theme::uses()->layout('gotap');
+
+        Theme::asset()->serve('qr');
+
+        $url = route('public.member.tap.index', ['uuid' => $uuid]);
+
+        return $theme->scope('gotap.qr.index', compact('url', 'uuid'))->render();
+    }
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      *
@@ -241,7 +354,7 @@ class PublicController extends Controller
     /**
      * @param SettingRequest $request
      * @param BaseHttpResponse $response
-     * @return BaseHttpResponse|\Illuminate\Http\RedirectResponse
+     * @return BaseHttpResponse|RedirectResponse
      */
     public function postSettings(SettingRequest $request, BaseHttpResponse $response)
     {
@@ -374,151 +487,174 @@ class PublicController extends Controller
      */
     public function RegexSocial($url, $type)
     {
-        switch ($type) {
-            case FACEBOOK:
+        try {
+            switch ($type) {
+                case FACEBOOK:
 
-                $facebookPatternId = '/(?:https?:)?\/\/(?:www\.)facebook.com\/(?:profile.php\?id=)?(?P<id>[0-9]+)/m';
+                    $facebookPatternId = '/(?:https?:)?\/\/(?:www\.)facebook.com\/(?:profile.php\?id=)?(?P<id>[0-9]+)/m';
 
-                preg_match($facebookPatternId, $url, $id);
+                    preg_match($facebookPatternId, $url, $id);
 
-                $facebookPatternUsername = '/(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?([\w\-]*)?/m';
+//                    $facebookPatternUsername = '/(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?([\w\-]*)?/m';
+                    $facebookPatternUsername = '/(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?(\d+|[A-Za-z0-9\.]+)\/?/m';
 
-                preg_match($facebookPatternUsername, $url, $username);
+                    preg_match($facebookPatternUsername, $url, $username);
 
-                return $profile = $id[1] ?? $username[1] ?? null;
+                    return $profile = $id[1] ?? $username[1] ?? null;
 
-            case INSTAGRAM:
+                case INSTAGRAM:
 
-                $instagramPattern = '/(?:https?:)?\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/(?P<username>[A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)/m';
+                    $instagramPattern = '/(?:https?:)?\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/(?P<username>[A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?)/m';
 
-                preg_match($instagramPattern, $url, $id);
+                    preg_match($instagramPattern, $url, $id);
 
-                return $id[1] ?? $url;
+                    return $id[1] ?? null;
 
-            case GITHUB:
+                case GITHUB:
 
-                $githubPattern = '/(?:https?:)?\/\/(?:www\.)?github\.com\/(?P<login>[A-z0-9_-]+)\/?/m';
+                    $githubPattern = '/(?:https?:)?\/\/(?:www\.)?github\.com\/(?P<login>[A-z0-9_-]+)\/?/m';
 
-                preg_match($githubPattern, $url, $id);
+                    preg_match($githubPattern, $url, $id);
 
-                return $id[1] ?? $url;
+                    return $id[1] ?? null;
 
-            case YOUTUBE:
+                case YOUTUBE:
 
-                $youtubePatternChannel = '/(?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/channel\/(?P<id>[A-z0-9-\_]+)\/?/m';
+                    $youtubePatternChannel = '/(?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/channel\/(?P<id>[A-z0-9-\_]+)\/?/m';
 
-                preg_match($youtubePatternChannel, $url, $channel);
+                    preg_match($youtubePatternChannel, $url, $channel);
 
-                $youtubePatternUser = '/(?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/user\/(?P<username>[A-z0-9]+)\/?/m';
+                    $youtubePatternUser = '/(?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/user\/(?P<username>[A-z0-9]+)\/?/m';
 
-                preg_match($youtubePatternUser, $url, $user);
+                    preg_match($youtubePatternUser, $url, $user);
 
-                $youtubePatternVideo = '/(?:https?:)?\/\/(?:(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)(?P<id>[A-z0-9\-\_]+)/m';
+                    $youtubePatternVideo = '/(?:https?:)?\/\/(?:(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)(?P<id>[A-z0-9\-\_]+)/m';
 
-                preg_match($youtubePatternVideo, $url, $video);
+                    preg_match($youtubePatternVideo, $url, $video);
 
-                return $channel[1] ?? $user[1] ?? $video[1] ?? $url;
+                    return $channel[1] ?? $user[1] ?? $video[1] ?? null;
 
-            case TIKTOK:
+                case TIKTOK:
+
+                    return $url;
                 // Pattern: (?:http|https)?\/\/(?:[A-z]+\.)?tiktok\.com\/@?(?!video|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?
-                $tiktokPattern = '/(?:http|https)?\/\/(?:[A-z]+\.)?tiktok\.com\/@?(?!video|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?';
+//                $tiktokPattern = '/(?:http|https)?\/\/(?:[A-z]+\.)?tiktok\.com\/@?(?!video|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?';
+//
+//                preg_match($tiktokPattern, $url, $user);
+//
+//                return $user[1] ?? $url;
 
-                preg_match($tiktokPattern, $url, $user);
+                case PINTEREST:
 
-                return $user[1] ?? $url;
+                    $pinterestPattern = '/(?:(?:http|https):\/\/)?(?:www.)?pinterest.com\/(?:(?:\w)*#!\/)?(?:[?\w\-]*\/)?([\w\-]*)?/m';
 
-            case PINTEREST:
+                    preg_match($pinterestPattern, $url, $username);
 
-                $pinterestPattern = '/(?:(?:http|https):\/\/)?(?:www.)?pinterest.com\/(?:(?:\w)*#!\/)?(?:[?\w\-]*\/)?([\w\-]*)?/m';
+                    return $username[1] ?? null;
 
-                preg_match($pinterestPattern, $url, $username);
+                case LINKEDIN:
 
-                return $username[1] ?? $url;
+                    $linkinPattern = '/(?:https?:)?\/\/(?:[\w]+\.)?linkedin.com\/in\/(?P<permalink>[\w\-\_À-ÿ%]+)\/?/m';
 
-            case LINKEDIN:
+                    preg_match($linkinPattern, $url, $username);
 
-                $linkinPattern = '/(?:https?:)?\/\/(?:[\w]+\.)?linkedin.com\/in\/(?P<permalink>[\w\-\_À-ÿ%]+)\/?/m';
+                    return $username[1] ?? null;
 
-                preg_match($linkinPattern, $url, $username);
+                case TWITTER:
 
-                return $username[1] ?? $url;
+                    $twitterPattern = '/(?:https?:)?\/\/(?:[A-z]+\.)?twitter\.com\/@?(?!home|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?/m';
 
-            case TWITTER:
+                    preg_match($twitterPattern, $url, $username);
 
-                $twitterPattern = '/(?:https?:)?\/\/(?:[A-z]+\.)?twitter\.com\/@?(?!home|share|privacy|tos)(?P<username>[A-z0-9_]+)\/?/m';
+                    return $username[1] ?? null;
 
-                preg_match($twitterPattern, $url, $username);
+                case SNAPCHAT:
 
-                return $username[1] ?? $url;
+                    $snapchatPattern = '/(?:https?:)?\/\/(?:www\.)?snapchat\.com\/add\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
 
-            case SNAPCHAT:
+                    preg_match($snapchatPattern, $url, $username);
 
-                $snapchatPattern = '/(?:https?:)?\/\/(?:www\.)?snapchat\.com\/add\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+                    return $username[1] ?? null;
 
-                preg_match($snapchatPattern, $url, $username);
+                case ZALO:
 
-                return $username[1] ?? $url;
+                    $zaloPattern = '/(?:https?:)?\/\/(?:www\.)?zalo\.me\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
 
-            case ZALO:
+                    preg_match($zaloPattern, $url, $username);
 
-                $zaloPattern = '/(?:https?:)?\/\/(?:www\.)?zalo\.me\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+                    return $username[1] ?? null;
+                case GAPO:
 
-                preg_match($zaloPattern, $url, $username);
+                    $gapoPattern = '/(?:https?:)?\/\/(?:www\.)?gapo\.vn\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
 
-                return $username[1] ?? $url;
+                    preg_match($gapoPattern, $url, $username);
 
-            case PHONE:
+                    return $username[1] ?? null;
 
-                return $url;
+                case LOTUS:
 
-            case SMS:
+                    $lotusPattern = '(?:https?:)?\/\/(?:www\.)?lotus\.vn\/w\/profile\/(?P<username>[A-z0-9\.\_\-]+)\/?\.htm';
 
-                return $url;
+                    preg_match($lotusPattern, $url, $username);
 
-            case EMAIL:
+                    return $username[1] ?? null;
 
-                $emailPattern = '/(?:mailto:)?(?P<email>[A-z0-9_.+-]+@[A-z0-9_.-]+\.[A-z]+)/m';
+                case PHONE:
 
-                preg_match($emailPattern, $url, $username);
+                    return $url;
 
-                return $username[1] ?? $url;
+                case SMS:
 
-            case SOUNDCLOUD:
-                $soundcloudPattern = '/(?:https?:)?\/\/(?:www\.)?soundcloud.com\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+                    return $url;
 
-                preg_match($soundcloudPattern, $url, $username);
+                case EMAIL:
 
-                return $username[1] ?? $url;
+                    $emailPattern = '/(?:mailto:)?(?P<email>[A-z0-9_.+-]+@[A-z0-9_.-]+\.[A-z]+)/m';
 
-            case TELEGRAM:
+                    preg_match($emailPattern, $url, $username);
 
-                $telegramPattern = '/(?:https?:)?\/\/(?:t(?:elegram)?\.me|telegram\.org)\/(?P<username>[a-z0-9\_]{5,32})\/?/m';
+                    return $username[1] ?? null;
 
-                preg_match($telegramPattern, $url, $username);
+                case SOUNDCLOUD:
+                    $soundcloudPattern = '/(?:https?:)?\/\/(?:www\.)?soundcloud.com\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
 
-                return $username[1] ?? $url;
+                    preg_match($soundcloudPattern, $url, $username);
 
-            case WHATSAPP:
+                    return $username[1] ?? null;
 
-                $whatsappPattern = '/(?:https?:)?\/\/(?:www\.)?wa\.me\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+                case TELEGRAM:
 
-                preg_match($whatsappPattern, $url, $username);
+                    $telegramPattern = '/(?:https?:)?\/\/(?:t(?:elegram)?\.me|telegram\.org)\/(?P<username>[a-z0-9\_]{5,32})\/?/m';
 
-                return $username[1] ?? $url;
+                    preg_match($telegramPattern, $url, $username);
 
-            case SKYPE:
+                    return $username[1] ?? null;
 
-                return $url;
+                case WHATSAPP:
 
-            case MOMO:
+                    $whatsappPattern = '/(?:https?:)?\/\/(?:www\.)?wa\.me\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
 
-                $momoPattern = '/(?:https?:)?\/\/(?:www\.)?nhantien\.momo\.vn\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+                    preg_match($whatsappPattern, $url, $username);
 
-                preg_match($momoPattern, $url, $username);
+                    return $username[1] ?? null;
 
-                return $username[1] ?? $url;
+                case SKYPE:
 
-            default: return $url;
+                    return $url;
+
+                case MOMO:
+
+                    $momoPattern = '/(?:https?:)?\/\/(?:www\.)?nhantien\.momo\.vn\/(?P<username>[A-z0-9\.\_\-]+)\/?/m';
+
+                    preg_match($momoPattern, $url, $username);
+
+                    return $username[1] ?? null;
+
+                default: return null;
+            }
+        } catch (Exception $exception) {
+            return null;
         }
+
     }
 }

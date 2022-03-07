@@ -5,8 +5,11 @@ namespace Theme\Gotap\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Botble\ACL\Traits\ResetsPasswords;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use SeoHelper;
+use Theme;
 
 class ResetPasswordController extends Controller
 {
@@ -38,7 +41,7 @@ class ResetPasswordController extends Controller
      */
     public function __construct()
     {
-        $this->redirectTo = route('public.member.dashboard');
+        $this->redirectTo = route('public.member.profile.index');
     }
 
     /**
@@ -76,5 +79,33 @@ class ResetPasswordController extends Controller
     protected function guard()
     {
         return auth('member');
+    }
+
+    public function showChangePasswordForm()
+    {
+        $theme = Theme::uses()->layout('gotap');
+
+        return $theme->scope('gotap.changepassword.index')->render();
+    }
+
+    public function storePassword(Request $request)
+    {
+        $request->validate([
+            'password' =>   'required',
+            'newpassword' => 'required|min:6|confirmed'
+        ]);
+        $user = Auth::guard('member')->user();
+        if (!(Hash::check($request->get('password'), $user->password))) {
+            return redirect()->back()->withErrors(['password' => "Sai mật khẩu"]);
+        }
+
+        if(strcmp($request->get('password'), $request->get('newpassword')) == 0){
+            return redirect()->back()->withErrors(['newpassword' => "Mật khẩu mới không được trùng mật khẩu cũ"]);
+        }
+
+        $user->password = bcrypt($request->get('newpassword'));
+        $user->save();
+
+        return redirect()->back()->with("success","Đổi mật khẩu thành công !");
     }
 }
