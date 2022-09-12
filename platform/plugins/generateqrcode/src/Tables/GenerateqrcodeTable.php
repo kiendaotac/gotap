@@ -67,7 +67,7 @@ class GenerateqrcodeTable extends TableAbstract
             })
             ->editColumn('link', function ($item) {
                 if ($item->link) {
-                    return Html::link('link', 'Download mã Qr');
+                    return Html::link($item->link, 'Download mã Qr');
                 }
                 return 'Chưa có link download';
             });

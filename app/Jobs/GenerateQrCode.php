@@ -77,7 +77,8 @@ class GenerateQrCode implements ShouldQueue
         file_put_contents(public_path() . '/qr/'. $this->generateqrcode->id .'/account-code-'. $fileName . '.txt', $accountCode);
 
         $zip = new \ZipArchive();
-        $zipFileName = public_path() . 'qr/' . $fileName . '.zip';
+        $relativeFileName = '/qr/' . $this->generateqrcode->id . '-' . $fileName . '.zip';
+        $zipFileName = public_path($relativeFileName);
         if ($zip->open($zipFileName, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)== TRUE)
         {
             $files = File::files(public_path('qr/'. $this->generateqrcode->id));
@@ -88,7 +89,7 @@ class GenerateQrCode implements ShouldQueue
             $zip->close();
         }
 
-        $this->generateqrcode->link = asset($zipFileName);
+        $this->generateqrcode->link = asset($relativeFileName);
         $this->generateqrcode->status = BaseStatusEnum::PUBLISHED;
         $this->generateqrcode->save();
 
